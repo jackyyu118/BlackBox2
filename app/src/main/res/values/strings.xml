@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">BlackBox2</string>
     <string name="choose">Choose</string>
     <string name="choose_app">Choose App</string>
     <string name="installed_app">Installed App</string>

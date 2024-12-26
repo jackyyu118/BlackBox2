@@ -12,7 +12,7 @@ import top.niunaijun.blackboxa.data.XpRepository
  */
 @Suppress("UNCHECKED_CAST")
 class XpFactory(private val repo:XpRepository): ViewModelProvider.NewInstanceFactory() {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return XpViewModel(repo) as T
     }
 }

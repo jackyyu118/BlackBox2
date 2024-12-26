@@ -1,8 +1,14 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion "28.0.2"
+    namespace 'top.niunaijun.blackbox'
+
+    compileSdk rootProject.ext.compileSdkVersion
+    buildToolsVersion = rootProject.ext.buildToolsVersion
+
+    buildFeatures {
+        aidl true
+    }
 
     defaultConfig {
         minSdkVersion 21
@@ -34,8 +40,8 @@ android {
         javaMaxHeapSize "4g"
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
     aaptOptions {
         cruncherEnabled = false
@@ -67,13 +73,12 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar", "*.aar"])
     implementation 'androidx.appcompat:appcompat:1.2.0'
 
-    implementation 'me.weishu:free_reflection:3.0.1'
+//    implementation 'com.github.tiann:FreeReflection:3.2.2'
     implementation "com.github.CodingGay.BlackReflection:core:$rootProject.ext.blackReflection"
     implementation project(':Bcore:black-fake')
     implementation project(':Bcore:black-hook')
-    implementation project(':android-mirror')
+    implementation project(':Bcore:android-mirror')
 
-    implementation project(':Bcore:pine-core')
-    implementation project(':Bcore:pine-xposed')
-    implementation project(':Bcore:pine-xposed-res')
+    implementation 'top.canyie.pine:core:0.2.9'
+    implementation 'top.canyie.pine:xposed:0.1.0'
 }

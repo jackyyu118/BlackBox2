@@ -3,8 +3,10 @@ plugins {
 }
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.3"
+    namespace 'top.niunaijun.black_fake'
+
+    compileSdk rootProject.ext.compileSdkVersion
+    buildToolsVersion = rootProject.ext.buildToolsVersion
 
     defaultConfig {
         minSdkVersion 21

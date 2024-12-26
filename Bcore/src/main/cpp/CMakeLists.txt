@@ -23,6 +23,8 @@ add_library( # Sets the name of the library.
         SHARED
         # Provides a relative path to your source file(s).
         BoxCore.cpp
+        hidden_api.cpp
+        Utils/elf_util.cpp
         ${SRC1}
         ${SRC2}
         ${SRC3}

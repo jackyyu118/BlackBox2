@@ -25,6 +25,7 @@ import top.niunaijun.blackbox.utils.Slog;
 public class ProxyActivity extends Activity {
     public static final String TAG = "ProxyActivity";
 
+    //因为HCallbackProxy已经hook了消息循环拦截了创建消息，所有一般情况下这里不会调用，可能是为了稳定性(消息循环hook失败就会走到这里)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

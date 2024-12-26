@@ -12,6 +12,7 @@
 #include <Hook/BinderHook.h>
 #include <Hook/RuntimeHook.h>
 #include "Utils/HexDump.h"
+#include "hidden_api.h"
 
 struct {
     JavaVM *vm;
@@ -97,16 +98,26 @@ void init(JNIEnv *env, jobject clazz, jint api_level) {
 
 void addIORule(JNIEnv *env, jclass clazz, jstring target_path,
                jstring relocate_path) {
+    ALOGD("set addIORule");
     IO::addRule(env->GetStringUTFChars(target_path, JNI_FALSE),
                 env->GetStringUTFChars(relocate_path, JNI_FALSE));
 }
 
 void enableIO(JNIEnv *env, jclass clazz) {
+    ALOGD("set enableIO");
     IO::init(env);
     nativeHook(env);
 }
 
+void disableHiddenApi(JNIEnv *env, jclass clazz) {
+    ALOGD("set disableHiddenApi");
+    if(!disable_hidden_api(env)){
+        ALOGD("set disableHiddenApi Fail!!!");
+    }
+}
+
 static JNINativeMethod gMethods[] = {
+        {"disableHiddenApi", "()V",                               (void *) disableHiddenApi},
         {"hideXposed", "()V",                                     (void *) hideXposed},
         {"addIORule",  "(Ljava/lang/String;Ljava/lang/String;)V", (void *) addIORule},
         {"enableIO",   "()V",                                     (void *) enableIO},

@@ -12,7 +12,7 @@ import top.niunaijun.blackboxa.data.GmsRepository
  */
 class GmsFactory(private val repo:GmsRepository): ViewModelProvider.NewInstanceFactory() {
 
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return GmsViewModel(repo) as T
     }
 }

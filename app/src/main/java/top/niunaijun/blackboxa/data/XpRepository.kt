@@ -24,7 +24,7 @@ class XpRepository {
                     it.name,
                     it.desc,
                     it.packageName,
-                    it.packageInfo.versionName,
+                    it.packageInfo.versionName.toString(),
                     it.enable,
                     it.application.loadIcon(getPackageManager())
             )

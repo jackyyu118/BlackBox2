@@ -36,5 +36,8 @@ static constexpr uint32_t kAccCorePlatformApi =       0x20000000;  // field, met
 // @dalvik.annotation.optimization.{Fast,Critical}Native annotations with build visibility.
 // Reuse the values of kAccSkipAccessChecks and kAccMiranda which are not used for native methods.
 static constexpr uint32_t kAccFastNative =            0x00080000;  // method (runtime; native only)
-static constexpr uint32_t kAccCriticalNative =        0x00200000;  // method (runtime; native only)
+static constexpr uint32_t kAccCriticalNative =        0x00100000;  // method (runtime; native only)
+
+static constexpr uint32_t kAccNterpInvokeFastPathFlag     = 0x00200000;  // method (runtime)
+
 #endif //ARTHOOK_ART_METHOD_H

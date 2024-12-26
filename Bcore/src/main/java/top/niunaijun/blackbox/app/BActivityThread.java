@@ -26,6 +26,7 @@ import android.os.Looper;
 import android.os.RemoteException;
 import android.os.StrictMode;
 import android.text.TextUtils;
+import android.util.Log;
 import android.webkit.WebView;
 
 import java.io.File;
@@ -48,6 +49,7 @@ import black.android.app.BRActivityThreadQ;
 import black.android.app.BRContextImpl;
 import black.android.app.BRLoadedApk;
 import black.android.app.BRService;
+import black.android.app.LoadedApk;
 import black.android.content.BRBroadcastReceiver;
 import black.android.content.BRContentProviderClient;
 import black.android.graphics.BRCompatibility;
@@ -366,6 +368,10 @@ public class BActivityThread extends IBActivityThread.Stub {
         try {
             onBeforeCreateApplication(packageName, processName, packageContext);
             application = BRLoadedApk.get(loadedApk).makeApplication(false, null);
+            if(application == null){
+                Log.e(TAG,"makeApplication application Error!" );
+                throw new NullPointerException("application空指针异常");
+            }
             mInitialApplication = application;
             BRActivityThread.get(BlackBoxCore.mainThread())._set_mInitialApplication(mInitialApplication);
             ContextCompat.fix((Context) BRActivityThread.get(BlackBoxCore.mainThread()).getSystemContext());

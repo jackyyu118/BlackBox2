@@ -39,7 +39,7 @@ public class NativeCore {
 
     public static native void hideXposed();
 
-    public static native void disableHiddenApi();
+    public static native boolean disableHiddenApi();
 
     public static void dumpDex(ClassLoader classLoader, String packageName) {
         List<Long> cookies = DexFileCompat.getCookies(classLoader);

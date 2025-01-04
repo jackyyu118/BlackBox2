@@ -7,8 +7,8 @@ import android.content.pm.ShortcutInfo;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
-import black.android.content.pm.BRIShortcutServiceStub;
-import black.android.os.BRServiceManager;
+import top.niunaijun.blackbox.reflect.android.content.pm.BRIShortcutService;
+import top.niunaijun.blackbox.reflect.android.os.BRServiceManager;
 import top.niunaijun.blackbox.fake.hook.BinderInvocationStub;
 import top.niunaijun.blackbox.fake.hook.MethodHook;
 import top.niunaijun.blackbox.fake.hook.ProxyMethod;
@@ -28,12 +28,12 @@ import top.niunaijun.blackbox.utils.compat.ParceledListSliceCompat;
 public class IShortcutManagerProxy extends BinderInvocationStub {
 
     public IShortcutManagerProxy() {
-        super(BRServiceManager.get().getService(Context.SHORTCUT_SERVICE));
+        super(BRServiceManager.getService.call(Context.SHORTCUT_SERVICE));
     }
 
     @Override
     protected Object getWho() {
-        return BRIShortcutServiceStub.get().asInterface(BRServiceManager.get().getService(Context.SHORTCUT_SERVICE));
+        return BRIShortcutService.Stub.asInterface.call(BRServiceManager.getService.call(Context.SHORTCUT_SERVICE));
     }
 
     @Override

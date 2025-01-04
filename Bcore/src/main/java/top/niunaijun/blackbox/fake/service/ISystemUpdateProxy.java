@@ -1,8 +1,8 @@
 package top.niunaijun.blackbox.fake.service;
 
 
-import black.android.os.BRServiceManager;
-import black.android.view.BRIAutoFillManagerStub;
+import top.niunaijun.blackbox.reflect.android.os.BRServiceManager;
+import top.niunaijun.blackbox.reflect.android.view.BRIAutoFillManager;
 import top.niunaijun.blackbox.fake.hook.BinderInvocationStub;
 
 /**
@@ -12,12 +12,12 @@ import top.niunaijun.blackbox.fake.hook.BinderInvocationStub;
  **/
 public class ISystemUpdateProxy extends BinderInvocationStub {
     public ISystemUpdateProxy() {
-        super(BRServiceManager.get().getService("system_update"));
+        super(BRServiceManager.getService.call("system_update"));
     }
 
     @Override
     protected Object getWho() {
-        return BRIAutoFillManagerStub.get().asInterface(BRServiceManager.get().getService("system_update"));
+        return BRIAutoFillManager.Stub.asInterface.call(BRServiceManager.getService.call("system_update"));
     }
 
     @Override

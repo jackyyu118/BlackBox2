@@ -4,8 +4,8 @@ import android.content.Context;
 
 import java.lang.reflect.Method;
 
-import black.android.os.BRServiceManager;
-import black.com.android.internal.appwidget.BRIAppWidgetServiceStub;
+import top.niunaijun.blackbox.reflect.android.os.BRServiceManager;
+import top.niunaijun.blackbox.reflect.com.android.internal.appwidget.BRIAppWidgetService;
 import top.niunaijun.blackbox.fake.hook.BinderInvocationStub;
 import top.niunaijun.blackbox.fake.service.base.ValueMethodProxy;
 import top.niunaijun.blackbox.utils.MethodParameterUtils;
@@ -21,12 +21,12 @@ import top.niunaijun.blackbox.utils.MethodParameterUtils;
 public class IAppWidgetManagerProxy extends BinderInvocationStub {
 
     public IAppWidgetManagerProxy() {
-        super(BRServiceManager.get().getService(Context.APPWIDGET_SERVICE));
+        super(BRServiceManager.getService.call(Context.APPWIDGET_SERVICE));
     }
 
     @Override
     protected Object getWho() {
-        return BRIAppWidgetServiceStub.get().asInterface(BRServiceManager.get().getService(Context.APPWIDGET_SERVICE));
+        return BRIAppWidgetService.Stub.asInterface.call(BRServiceManager.getService.call(Context.APPWIDGET_SERVICE));
     }
 
     @Override

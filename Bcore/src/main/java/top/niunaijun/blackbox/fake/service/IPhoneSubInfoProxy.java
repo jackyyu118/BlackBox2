@@ -2,7 +2,7 @@ package top.niunaijun.blackbox.fake.service;
 
 import java.lang.reflect.Method;
 
-import black.android.telephony.BRTelephonyManager;
+import top.niunaijun.blackbox.reflect.android.telephony.BRTelephonyManager;
 import top.niunaijun.blackbox.fake.hook.ClassInvocationStub;
 import top.niunaijun.blackbox.fake.hook.MethodHook;
 import top.niunaijun.blackbox.fake.hook.ProxyMethod;
@@ -15,22 +15,22 @@ public class IPhoneSubInfoProxy extends ClassInvocationStub {
     public static final String TAG = "IPhoneSubInfoProxy";
 
     public IPhoneSubInfoProxy() {
-        if (BRTelephonyManager.get()._check_sServiceHandleCacheEnabled() != null) {
-            BRTelephonyManager.get()._set_sServiceHandleCacheEnabled(true);
+        if (BRTelephonyManager.sServiceHandleCacheEnabled != null) {
+            BRTelephonyManager.sServiceHandleCacheEnabled.set(true);
         }
-        if (BRTelephonyManager.get()._check_getSubscriberInfoService() != null) {
-            BRTelephonyManager.get().getSubscriberInfoService();
+        if (BRTelephonyManager.getSubscriberInfoService != null) {
+            BRTelephonyManager.getSubscriberInfoService.call();
         }
     }
 
     @Override
     protected Object getWho() {
-        return BRTelephonyManager.get().sIPhoneSubInfo();
+        return BRTelephonyManager.sIPhoneSubInfo.get();
     }
 
     @Override
     protected void inject(Object baseInvocation, Object proxyInvocation) {
-        BRTelephonyManager.get()._set_sIPhoneSubInfo(proxyInvocation);
+        BRTelephonyManager.sIPhoneSubInfo.set(proxyInvocation);
     }
 
     @Override

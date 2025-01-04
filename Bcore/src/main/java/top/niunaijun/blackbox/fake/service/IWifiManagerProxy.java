@@ -6,10 +6,10 @@ import android.util.Log;
 
 import java.lang.reflect.Method;
 
-import black.android.net.wifi.BRIWifiManagerStub;
-import black.android.net.wifi.BRWifiInfo;
-import black.android.net.wifi.BRWifiSsid;
-import black.android.os.BRServiceManager;
+import top.niunaijun.blackbox.reflect.android.net.wifi.BRIWifiManager;
+import top.niunaijun.blackbox.reflect.android.net.wifi.BRWifiInfo;
+import top.niunaijun.blackbox.reflect.android.net.wifi.BRWifiSsid;
+import top.niunaijun.blackbox.reflect.android.os.BRServiceManager;
 import top.niunaijun.blackbox.fake.hook.BinderInvocationStub;
 import top.niunaijun.blackbox.fake.hook.MethodHook;
 import top.niunaijun.blackbox.fake.hook.ProxyMethod;
@@ -26,12 +26,12 @@ public class IWifiManagerProxy extends BinderInvocationStub {
     public static final String TAG = "IWifiManagerProxy";
 
     public IWifiManagerProxy() {
-        super(BRServiceManager.get().getService(Context.WIFI_SERVICE));
+        super(BRServiceManager.getService.call(Context.WIFI_SERVICE));
     }
 
     @Override
     protected Object getWho() {
-        return BRIWifiManagerStub.get().asInterface(BRServiceManager.get().getService(Context.WIFI_SERVICE));
+        return BRIWifiManager.Stub.asInterface.call(BRServiceManager.getService.call(Context.WIFI_SERVICE));
     }
 
     @Override
@@ -54,9 +54,9 @@ public class IWifiManagerProxy extends BinderInvocationStub {
         @Override
         protected Object hook(Object who, Method method, Object[] args) throws Throwable {
             WifiInfo wifiInfo = (WifiInfo) method.invoke(who, args);
-            BRWifiInfo.get(wifiInfo)._set_mBSSID("ac:62:5a:82:65:c4");
-            BRWifiInfo.get(wifiInfo)._set_mMacAddress("ac:62:5a:82:65:c4");
-            BRWifiInfo.get(wifiInfo)._set_mWifiSsid(BRWifiSsid.get().createFromAsciiEncoded("BlackBox_Wifi"));
+            BRWifiInfo.mBSSID.set(wifiInfo,"ac:62:5a:82:65:c4");
+            BRWifiInfo.mMacAddress.set(wifiInfo,"ac:62:5a:82:65:c4");
+            BRWifiInfo.mWifiSsid.set(wifiInfo,BRWifiSsid.createFromAsciiEncoded.call("BlackBox_Wifi"));
             return wifiInfo;
         }
 

@@ -17,8 +17,7 @@ import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import black.android.location.BRILocationListener;
-import black.android.location.BRILocationListenerStub;
+import top.niunaijun.blackbox.reflect.android.location.BRILocationListener;
 import top.niunaijun.blackbox.BlackBoxCore;
 import top.niunaijun.blackbox.core.env.BEnvironment;
 import top.niunaijun.blackbox.core.system.ISystemService;
@@ -242,7 +241,7 @@ public class BLocationManagerService extends IBLocationManagerService.Stub imple
             BLocation lastLocation = null;
             long l = System.currentTimeMillis();
             while (locationListener.pingBinder()) {
-                IInterface iInterface = BRILocationListenerStub.get().asInterface(locationListener);
+                IInterface iInterface = BRILocationListener.Stub.asInterface.call(locationListener);
                 LocationRecord locationRecord = mLocationListeners.get(locationListener);
                 if (locationRecord == null)
                     continue;
@@ -258,7 +257,7 @@ public class BLocationManagerService extends IBLocationManagerService.Stub imple
                 }
                 lastLocation = location;
                 l = System.currentTimeMillis();
-                BlackBoxCore.get().getHandler().post(() -> BRILocationListener.get(iInterface).onLocationChanged(location.convert2SystemLocation()));
+                BlackBoxCore.get().getHandler().post(() -> BRILocationListener.onLocationChanged.call(iInterface,location.convert2SystemLocation()));
             }
         });
     }

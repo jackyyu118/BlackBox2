@@ -20,11 +20,11 @@ import android.os.Build;
 import java.util.HashSet;
 import java.util.Set;
 
-import black.android.content.pm.BRApplicationInfoL;
-import black.android.content.pm.BRApplicationInfoN;
-import black.android.content.pm.BRPackageParserSigningDetails;
-import black.android.content.pm.BRSigningInfo;
-import black.android.content.res.BRAssetManager;
+import top.niunaijun.blackbox.reflect.android.content.pm.BRApplicationInfoL;
+import top.niunaijun.blackbox.reflect.android.content.pm.BRApplicationInfoN;
+import top.niunaijun.blackbox.reflect.android.content.pm.BRPackageParser;
+import top.niunaijun.blackbox.reflect.android.content.pm.BRSigningInfo;
+import top.niunaijun.blackbox.reflect.android.content.res.BRAssetManager;
 import top.niunaijun.blackbox.BlackBoxCore;
 import top.niunaijun.blackbox.core.env.AppSystemEnv;
 import top.niunaijun.blackbox.core.env.BEnvironment;
@@ -202,9 +202,8 @@ public class PackageManagerCompat {
         if (BuildCompat.isPie()) {
             if ((flags & PackageManager.GET_SIGNING_CERTIFICATES) != 0) {
                 if (base == null) {
-                    PackageParser.SigningDetails signingDetails = PackageParser.SigningDetails.UNKNOWN;
-                    BRPackageParserSigningDetails.get(signingDetails)._set_signatures(p.mSigningDetails.signatures);
-                    pi.signingInfo = BRSigningInfo.get()._new(signingDetails);
+                    BRPackageParser.SigningDetails.signatures.set(null, p.mSigningDetails.signatures);
+                    pi.signingInfo = BRSigningInfo._new.newInstance();
                 } else {
                     pi.signingInfo = base.signingInfo;
                 }
@@ -306,24 +305,27 @@ public class PackageManagerCompat {
 //        ai.uid = baseApplication.uid;
 
         if (BuildCompat.isL()) {
-            BRApplicationInfoL.get(ai)._set_primaryCpuAbi(Build.CPU_ABI);
-            BRApplicationInfoL.get(ai)._set_scanPublicSourceDir(BRApplicationInfoL.get(baseApplication).scanPublicSourceDir());
-            BRApplicationInfoL.get(ai)._set_scanSourceDir(BRApplicationInfoL.get(baseApplication).scanSourceDir());
+            BRApplicationInfoL.primaryCpuAbi.set(ai, Build.CPU_ABI);
+            BRApplicationInfoL.scanPublicSourceDir.set(ai, BRApplicationInfoL.scanPublicSourceDir.get(baseApplication));
+            BRApplicationInfoL.scanSourceDir.set(ai, BRApplicationInfoL.scanSourceDir.get(baseApplication));
         }
         if (BuildCompat.isN()) {
             ai.deviceProtectedDataDir = BEnvironment.getDeDataDir(p.packageName, userId).getAbsolutePath();
 
-            if (BRApplicationInfoN.get(ai)._check_deviceEncryptedDataDir() != null) {
-                BRApplicationInfoN.get(ai)._set_deviceEncryptedDataDir(ai.deviceProtectedDataDir);
+            if (BRApplicationInfoN.deviceProtectedDataDir != null) {
+                BRApplicationInfoN.deviceProtectedDataDir.set(ai, ai.deviceProtectedDataDir);
             }
-            if (BRApplicationInfoN.get(ai)._check_credentialEncryptedDataDir() != null) {
-                BRApplicationInfoN.get(ai)._set_credentialEncryptedDataDir(ai.dataDir);
+
+            if (BRApplicationInfoN.credentialEncryptedDataDir != null) {
+                BRApplicationInfoN.credentialEncryptedDataDir.set(ai, ai.dataDir);
             }
-            if (BRApplicationInfoN.get(ai)._check_deviceProtectedDataDir() != null) {
-                BRApplicationInfoN.get(ai)._set_deviceProtectedDataDir(ai.deviceProtectedDataDir);
+
+            if (BRApplicationInfoN.deviceProtectedDataDir != null) {
+                BRApplicationInfoN.deviceProtectedDataDir.set(ai, ai.deviceProtectedDataDir);
             }
-            if (BRApplicationInfoN.get(ai)._check_credentialProtectedDataDir() != null) {
-                BRApplicationInfoN.get(ai)._set_credentialProtectedDataDir(ai.dataDir);
+
+            if (BRApplicationInfoN.credentialProtectedDataDir != null) {
+                BRApplicationInfoN.credentialProtectedDataDir.set(ai, ai.dataDir);
             }
         }
         fixJar(ai);
@@ -365,8 +367,8 @@ public class PackageManagerCompat {
     public static Resources getResources(Context context, ApplicationInfo appInfo) {
         BPackageSettings ps = BPackageManagerService.get().getBPackageSetting(appInfo.packageName);
         if (ps != null) {
-            AssetManager assets = BRAssetManager.get()._new();
-            BRAssetManager.get(assets).addAssetPath(ps.pkg.baseCodePath);
+            AssetManager assets = BRAssetManager._new.newInstance();
+            BRAssetManager.addAssetPath.call(assets,ps.pkg.baseCodePath);
             Resources hostRes = context.getResources();
             return new Resources(assets, hostRes.getDisplayMetrics(), hostRes.getConfiguration());
         }

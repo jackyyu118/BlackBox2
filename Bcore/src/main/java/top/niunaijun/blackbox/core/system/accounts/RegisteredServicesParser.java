@@ -8,7 +8,7 @@ import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.os.Bundle;
 
-import black.android.content.res.BRAssetManager;
+import top.niunaijun.blackbox.reflect.android.content.res.BRAssetManager;
 import top.niunaijun.blackbox.core.system.pm.BPackageManagerService;
 import top.niunaijun.blackbox.core.system.pm.BPackageSettings;
 import top.niunaijun.blackbox.core.system.pm.PackageManagerCompat;

@@ -5,9 +5,9 @@ import android.content.Context;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
-import black.android.content.pm.BRUserInfo;
-import black.android.os.BRIUserManagerStub;
-import black.android.os.BRServiceManager;
+import top.niunaijun.blackbox.reflect.android.content.pm.BRUserInfo;
+import top.niunaijun.blackbox.reflect.android.os.BRIUserManager;
+import top.niunaijun.blackbox.reflect.android.os.BRServiceManager;
 import top.niunaijun.blackbox.BlackBoxCore;
 import top.niunaijun.blackbox.app.BActivityThread;
 import top.niunaijun.blackbox.fake.hook.BinderInvocationStub;
@@ -24,12 +24,12 @@ import top.niunaijun.blackbox.fake.hook.ProxyMethod;
  */
 public class IUserManagerProxy extends BinderInvocationStub {
     public IUserManagerProxy() {
-        super(BRServiceManager.get().getService(Context.USER_SERVICE));
+        super(BRServiceManager.getService.call(Context.USER_SERVICE));
     }
 
     @Override
     protected Object getWho() {
-        return BRIUserManagerStub.get().asInterface(BRServiceManager.get().getService(Context.USER_SERVICE));
+        return BRIUserManager.Stub.asInterface.call(BRServiceManager.getService.call(Context.USER_SERVICE));
     }
 
     @Override
@@ -55,7 +55,7 @@ public class IUserManagerProxy extends BinderInvocationStub {
     public static class GetProfileParent extends MethodHook {
         @Override
         protected Object hook(Object who, Method method, Object[] args) throws Throwable {
-            Object blackBox = BRUserInfo.get()._new(BActivityThread.getUserId(), "BlackBox", BRUserInfo.get().FLAG_PRIMARY());
+            Object blackBox = BRUserInfo._new.newInstance(BActivityThread.getUserId(), "BlackBox", BRUserInfo.FLAG_PRIMARY.get());
             return blackBox;
         }
     }

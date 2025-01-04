@@ -4,8 +4,8 @@ import android.content.ComponentName;
 
 import java.lang.reflect.Method;
 
-import black.android.os.BRServiceManager;
-import black.android.view.BRIAutoFillManagerStub;
+import top.niunaijun.blackbox.reflect.android.os.BRServiceManager;
+import top.niunaijun.blackbox.reflect.android.view.BRIAutoFillManager;
 import top.niunaijun.blackbox.BlackBoxCore;
 import top.niunaijun.blackbox.app.BActivityThread;
 import top.niunaijun.blackbox.fake.hook.BinderInvocationStub;
@@ -25,12 +25,12 @@ public class IAutofillManagerProxy extends BinderInvocationStub {
     public static final String TAG = "AutofillManagerStub";
 
     public IAutofillManagerProxy() {
-        super(BRServiceManager.get().getService("autofill"));
+        super(BRServiceManager.getService.call("autofill"));
     }
 
     @Override
     protected Object getWho() {
-        return BRIAutoFillManagerStub.get().asInterface(BRServiceManager.get().getService("autofill"));
+        return BRIAutoFillManager.Stub.asInterface.call(BRServiceManager.getService.call("autofill"));
     }
 
     @Override

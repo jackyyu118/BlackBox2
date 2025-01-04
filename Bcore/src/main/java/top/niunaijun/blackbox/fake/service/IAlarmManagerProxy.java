@@ -4,8 +4,8 @@ import android.content.Context;
 
 import java.lang.reflect.Method;
 
-import black.android.app.BRIAlarmManagerStub;
-import black.android.os.BRServiceManager;
+import top.niunaijun.blackbox.reflect.android.app.BRIAlarmManager;
+import top.niunaijun.blackbox.reflect.android.os.BRServiceManager;
 import top.niunaijun.blackbox.fake.hook.BinderInvocationStub;
 import top.niunaijun.blackbox.fake.hook.MethodHook;
 import top.niunaijun.blackbox.fake.hook.ProxyMethod;
@@ -21,12 +21,12 @@ import top.niunaijun.blackbox.fake.hook.ProxyMethod;
 public class IAlarmManagerProxy extends BinderInvocationStub {
 
     public IAlarmManagerProxy() {
-        super(BRServiceManager.get().getService(Context.ALARM_SERVICE));
+        super(BRServiceManager.getService.call(Context.ALARM_SERVICE));
     }
 
     @Override
     protected Object getWho() {
-        return BRIAlarmManagerStub.get().asInterface(BRServiceManager.get().getService(Context.ALARM_SERVICE));
+        return BRIAlarmManager.Stub.asInterface.call(BRServiceManager.getService.call(Context.ALARM_SERVICE));
     }
 
     @Override

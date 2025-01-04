@@ -2,8 +2,8 @@ package top.niunaijun.blackbox.fake.service;
 
 import android.content.Context;
 
-import black.android.os.BRIPowerManagerStub;
-import black.android.os.BRServiceManager;
+import top.niunaijun.blackbox.reflect.android.os.BRIPowerManager;
+import top.niunaijun.blackbox.reflect.android.os.BRServiceManager;
 import top.niunaijun.blackbox.fake.hook.BinderInvocationStub;
 import top.niunaijun.blackbox.fake.service.base.ValueMethodProxy;
 
@@ -12,12 +12,12 @@ import top.niunaijun.blackbox.fake.service.base.ValueMethodProxy;
  */
 public class IPowerManagerProxy extends BinderInvocationStub {
     public IPowerManagerProxy() {
-        super(BRServiceManager.get().getService(Context.POWER_SERVICE));
+        super(BRServiceManager.getService.call(Context.POWER_SERVICE));
     }
 
     @Override
     protected Object getWho() {
-        return BRIPowerManagerStub.get().asInterface(BRServiceManager.get().getService(Context.POWER_SERVICE));
+        return BRIPowerManager.Stub.asInterface.call(BRServiceManager.getService.call(Context.POWER_SERVICE));
     }
 
     @Override

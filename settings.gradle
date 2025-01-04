@@ -36,5 +36,4 @@ rootProject.name = "BlackBox2"
 include ':app'
 include ':Bcore:black-hook'
 include ':Bcore:black-fake'
-include ':Bcore:android-mirror'
 include ':Bcore'

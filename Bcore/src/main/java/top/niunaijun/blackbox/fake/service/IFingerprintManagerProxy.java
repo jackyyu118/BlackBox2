@@ -3,10 +3,10 @@ package top.niunaijun.blackbox.fake.service;
 import android.content.Context;
 import android.os.IBinder;
 
-import black.android.os.BRServiceManager;
-import black.android.view.BRIGraphicsStatsStub;
+import top.niunaijun.blackbox.reflect.android.os.BRServiceManager;
 import top.niunaijun.blackbox.fake.hook.BinderInvocationStub;
 import top.niunaijun.blackbox.fake.service.base.PkgMethodProxy;
+import top.niunaijun.blackbox.reflect.android.view.BRIGraphicsStats;
 
 /**
  * @author Findger
@@ -15,12 +15,12 @@ import top.niunaijun.blackbox.fake.service.base.PkgMethodProxy;
  **/
 public class IFingerprintManagerProxy extends BinderInvocationStub {
     public IFingerprintManagerProxy() {
-        super(BRServiceManager.get().getService(Context.FINGERPRINT_SERVICE));
+        super(BRServiceManager.getService.call(Context.FINGERPRINT_SERVICE));
     }
 
     @Override
     protected Object getWho() {
-        return BRIGraphicsStatsStub.get().asInterface(BRServiceManager.get().getService(Context.FINGERPRINT_SERVICE));
+        return BRIGraphicsStats.Stub.asInterface.call(BRServiceManager.getService.call(Context.FINGERPRINT_SERVICE));
     }
 
     @Override

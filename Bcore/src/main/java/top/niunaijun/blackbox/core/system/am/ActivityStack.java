@@ -26,9 +26,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import black.android.app.BRActivityManagerNative;
-import black.android.app.BRIActivityManager;
-import black.com.android.internal.BRRstyleable;
+import top.niunaijun.blackbox.reflect.android.app.BRActivityManagerNative;
+import top.niunaijun.blackbox.reflect.android.app.BRIActivityManager;
+import top.niunaijun.blackbox.reflect.com.android.internal.BRR;
 import top.niunaijun.blackbox.BlackBoxCore;
 import top.niunaijun.blackbox.core.system.BProcessManagerService;
 import top.niunaijun.blackbox.core.system.ProcessRecord;
@@ -40,6 +40,7 @@ import top.niunaijun.blackbox.proxy.record.ProxyActivityRecord;
 import top.niunaijun.blackbox.utils.ComponentUtils;
 import top.niunaijun.blackbox.utils.Slog;
 import top.niunaijun.blackbox.utils.compat.ActivityManagerCompat;
+import top.niunaijun.blackbox.utils.ArrayUtils;
 
 import static android.content.pm.PackageManager.GET_ACTIVITIES;
 
@@ -318,7 +319,7 @@ public class ActivityStack {
             flags &= ~ActivityManagerCompat.START_FLAG_NATIVE_DEBUGGING;
             flags &= ~ActivityManagerCompat.START_FLAG_TRACK_ALLOCATION;
 
-            BRIActivityManager.get(BRActivityManagerNative.get().getDefault()).startActivity(appThread, BlackBoxCore.getHostPkg(), intent,
+            BRIActivityManager.startActivity.call(BRActivityManagerNative.getDefault.call(),appThread, BlackBoxCore.getHostPkg(), intent,
                     resolvedType, resultTo, resultWho, requestCode, flags, null, options);
         } catch (Throwable e) {
             e.printStackTrace();
@@ -350,8 +351,12 @@ public class ActivityStack {
                 id = activityInfo.applicationInfo.theme;
             }
             assert resources != null;
-            typedArray = resources.newTheme().obtainStyledAttributes(id, BRRstyleable.get().Window());
-            boolean windowIsTranslucent = typedArray.getBoolean(BRRstyleable.get().Window_windowIsTranslucent(), false);
+//            typedArray = resources.newTheme().obtainStyledAttributes(id, BRRstyleable.get().Window());
+//            boolean windowIsTranslucent = typedArray.getBoolean(BRRstyleable.get().Window_windowIsTranslucent(), false);
+
+            typedArray = resources.newTheme().obtainStyledAttributes(id, ArrayUtils.toInt(BRR.styleable.Window.get()));
+            boolean windowIsTranslucent = typedArray.getBoolean(BRR.styleable.Window_windowIsTranslucent.get(), false);
+
             if (windowIsTranslucent) {
                 shadow.setComponent(new ComponentName(BlackBoxCore.getHostPkg(), ProxyManifest.TransparentProxyActivity(vpid)));
             } else {

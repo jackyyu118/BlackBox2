@@ -73,11 +73,13 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar", "*.aar"])
     implementation 'androidx.appcompat:appcompat:1.2.0'
 
-    implementation 'com.github.tiann:FreeReflection:3.2.2'
-    implementation "com.github.CodingGay.BlackReflection:core:$rootProject.ext.blackReflection"
     implementation project(':Bcore:black-fake')
     implementation project(':Bcore:black-hook')
-    implementation project(':Bcore:android-mirror')
+//    implementation project(':Bcore:android-mirror')
+
+//    implementation 'com.github.tiann:FreeReflection:3.2.2'
+//    implementation "com.github.CodingGay.BlackReflection:core:$rootProject.ext.blackReflection"
+    implementation ("org.lsposed.hiddenapibypass:hiddenapibypass:$rootProject.ext.hiddenApiBypass")
 
     implementation 'top.canyie.pine:core:0.2.9'
     implementation 'top.canyie.pine:xposed:0.1.0'

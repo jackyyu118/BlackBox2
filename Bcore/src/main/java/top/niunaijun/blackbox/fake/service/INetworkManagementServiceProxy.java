@@ -4,8 +4,8 @@ import static top.niunaijun.blackbox.app.BActivityThread.getUid;
 
 import java.lang.reflect.Method;
 
-import black.android.os.BRINetworkManagementServiceStub;
-import black.android.os.BRServiceManager;
+import top.niunaijun.blackbox.reflect.android.os.BRINetworkManagementService;
+import top.niunaijun.blackbox.reflect.android.os.BRServiceManager;
 import top.niunaijun.blackbox.fake.hook.BinderInvocationStub;
 import top.niunaijun.blackbox.fake.hook.MethodHook;
 import top.niunaijun.blackbox.fake.hook.ProxyMethod;
@@ -19,12 +19,12 @@ public class INetworkManagementServiceProxy extends BinderInvocationStub {
     public static final String NAME = "network_management";
 
     public INetworkManagementServiceProxy() {
-        super(BRServiceManager.get().getService(NAME));
+        super(BRServiceManager.getService.call(NAME));
     }
 
     @Override
     protected Object getWho() {
-        return BRINetworkManagementServiceStub.get().asInterface(BRServiceManager.get().getService(NAME));
+        return BRINetworkManagementService.Stub.asInterface.call(BRServiceManager.getService.call(NAME));
     }
 
     @Override

@@ -4,9 +4,9 @@ import android.os.IInterface;
 
 import java.lang.reflect.Method;
 
-import black.android.os.BRServiceManager;
-import black.android.view.BRIWindowManagerStub;
-import black.android.view.BRWindowManagerGlobal;
+import top.niunaijun.blackbox.reflect.android.os.BRServiceManager;
+import top.niunaijun.blackbox.reflect.android.view.BRIWindowManager;
+import top.niunaijun.blackbox.reflect.android.view.BRWindowManagerGlobal;
 import top.niunaijun.blackbox.fake.hook.BinderInvocationStub;
 import top.niunaijun.blackbox.fake.hook.MethodHook;
 import top.niunaijun.blackbox.fake.hook.ProxyMethod;
@@ -23,18 +23,18 @@ public class IWindowManagerProxy extends BinderInvocationStub {
     public static final String TAG = "WindowManagerStub";
 
     public IWindowManagerProxy() {
-        super(BRServiceManager.get().getService("window"));
+        super(BRServiceManager.getService.call("window"));
     }
 
     @Override
     protected Object getWho() {
-        return BRIWindowManagerStub.get().asInterface(BRServiceManager.get().getService("window"));
+        return BRIWindowManager.Stub.asInterface.call(BRServiceManager.getService.call("window"));
     }
 
     @Override
     protected void inject(Object baseInvocation, Object proxyInvocation) {
         replaceSystemService("window");
-        BRWindowManagerGlobal.get()._set_sWindowManagerService(null);
+        BRWindowManagerGlobal.sWindowManagerService.set(null);
     }
 
     @Override

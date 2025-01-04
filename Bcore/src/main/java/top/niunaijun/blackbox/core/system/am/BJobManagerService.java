@@ -13,7 +13,7 @@ import android.text.TextUtils;
 import java.util.HashMap;
 import java.util.Map;
 
-import black.android.app.job.BRJobInfo;
+import top.niunaijun.blackbox.reflect.android.app.job.BRJobInfo;
 import top.niunaijun.blackbox.BlackBoxCore;
 import top.niunaijun.blackbox.core.system.BProcessManagerService;
 import top.niunaijun.blackbox.core.system.ISystemService;
@@ -73,7 +73,7 @@ public class BJobManagerService extends IBJobManagerService.Stub implements ISys
         jobRecord.mServiceInfo = serviceInfo;
 
         mJobRecords.put(formatKey(processRecord.processName, info.getId()), jobRecord);
-        BRJobInfo.get(info)._set_service(new ComponentName(BlackBoxCore.getHostPkg(), ProxyManifest.getProxyJobService(processRecord.bpid)));
+        BRJobInfo.service.set(info,new ComponentName(BlackBoxCore.getHostPkg(), ProxyManifest.getProxyJobService(processRecord.bpid)));
         return info;
     }
 

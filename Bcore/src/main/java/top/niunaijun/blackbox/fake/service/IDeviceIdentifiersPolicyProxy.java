@@ -3,8 +3,8 @@ package top.niunaijun.blackbox.fake.service;
 
 import java.lang.reflect.Method;
 
-import black.android.os.BRIDeviceIdentifiersPolicyServiceStub;
-import black.android.os.BRServiceManager;
+import top.niunaijun.blackbox.reflect.android.os.BRIDeviceIdentifiersPolicyService;
+import top.niunaijun.blackbox.reflect.android.os.BRServiceManager;
 import top.niunaijun.blackbox.BlackBoxCore;
 import top.niunaijun.blackbox.fake.hook.BinderInvocationStub;
 import top.niunaijun.blackbox.fake.hook.MethodHook;
@@ -22,12 +22,12 @@ import top.niunaijun.blackbox.utils.Md5Utils;
 public class IDeviceIdentifiersPolicyProxy extends BinderInvocationStub {
 
     public IDeviceIdentifiersPolicyProxy() {
-        super(BRServiceManager.get().getService("device_identifiers"));
+        super(BRServiceManager.getService.call("device_identifiers"));
     }
 
     @Override
     protected Object getWho() {
-        return BRIDeviceIdentifiersPolicyServiceStub.get().asInterface(BRServiceManager.get().getService("device_identifiers"));
+        return BRIDeviceIdentifiersPolicyService.Stub.asInterface.call(BRServiceManager.getService.call("device_identifiers"));
     }
 
     @Override

@@ -38,24 +38,21 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import black.android.app.ActivityThreadAppBindDataContext;
-import black.android.app.BRActivity;
-import black.android.app.BRActivityManagerNative;
-import black.android.app.BRActivityThread;
-import black.android.app.BRActivityThreadActivityClientRecord;
-import black.android.app.BRActivityThreadAppBindData;
-import black.android.app.BRActivityThreadNMR1;
-import black.android.app.BRActivityThreadQ;
-import black.android.app.BRContextImpl;
-import black.android.app.BRLoadedApk;
-import black.android.app.BRService;
-import black.android.app.LoadedApk;
-import black.android.content.BRBroadcastReceiver;
-import black.android.content.BRContentProviderClient;
-import black.android.graphics.BRCompatibility;
-import black.android.security.net.config.BRNetworkSecurityConfigProvider;
-import black.com.android.internal.content.BRReferrerIntent;
-import black.dalvik.system.BRVMRuntime;
+import top.niunaijun.blackbox.reflect.android.app.BRActivity;
+import top.niunaijun.blackbox.reflect.android.app.BRActivityManagerNative;
+import top.niunaijun.blackbox.reflect.android.app.BRActivityThread;
+import top.niunaijun.blackbox.reflect.android.app.BRActivityThreadNMR1;
+import top.niunaijun.blackbox.reflect.android.app.BRActivityThreadQ;
+import top.niunaijun.blackbox.reflect.android.app.BRContextImpl;
+import top.niunaijun.blackbox.reflect.android.app.BRLoadedApk;
+import top.niunaijun.blackbox.reflect.android.app.BRService;
+import top.niunaijun.blackbox.reflect.android.content.BRBroadcastReceiver;
+import top.niunaijun.blackbox.reflect.android.content.BRContentProviderClient;
+import top.niunaijun.blackbox.reflect.android.graphics.BRCompatibility;
+import top.niunaijun.blackbox.reflect.android.security.net.config.BRNetworkSecurityConfigProvider;
+import top.niunaijun.blackbox.reflect.com.android.internal.content.BRReferrerIntent;
+import top.niunaijun.blackbox.reflect.dalvik.system.BRVMRuntime;
+
 import top.canyie.pine.xposed.PineXposed;
 import top.niunaijun.blackbox.BlackBoxCore;
 import top.niunaijun.blackbox.app.configuration.AppLifecycleCallback;
@@ -208,7 +205,7 @@ public class BActivityThread extends IBActivityThread.Stub {
         if (!BActivityThread.currentActivityThread().isInit()) {
             BActivityThread.currentActivityThread().bindApplication(serviceInfo.packageName, serviceInfo.processName);
         }
-        ClassLoader classLoader = BRLoadedApk.get(mBoundApplication.info).getClassLoader();
+        ClassLoader classLoader = BRLoadedApk.getClassLoader.call(mBoundApplication.info);
         Service service;
         try {
             service = (Service) classLoader.loadClass(serviceInfo.name).newInstance();
@@ -224,14 +221,14 @@ public class BActivityThread extends IBActivityThread.Stub {
                     serviceInfo.packageName,
                     Context.CONTEXT_INCLUDE_CODE | Context.CONTEXT_IGNORE_SECURITY
             );
-            BRContextImpl.get(context).setOuterContext(service);
-            BRService.get(service).attach(
+            BRContextImpl.setOuterContext.call(context,service);
+            BRService.attach.call(service,
                     context,
                     BlackBoxCore.mainThread(),
                     serviceInfo.name,
                     token,
                     mInitialApplication,
-                    BRActivityManagerNative.get().getDefault()
+                    BRActivityManagerNative.getDefault.call()
             );
             ContextCompat.fix(context);
             service.onCreate();
@@ -247,7 +244,7 @@ public class BActivityThread extends IBActivityThread.Stub {
         if (!BActivityThread.currentActivityThread().isInit()) {
             BActivityThread.currentActivityThread().bindApplication(serviceInfo.packageName, serviceInfo.processName);
         }
-        ClassLoader classLoader = BRLoadedApk.get(mBoundApplication.info).getClassLoader();
+        ClassLoader classLoader = BRLoadedApk.getClassLoader.call(mBoundApplication.info);
         JobService service;
         try {
             service = (JobService) classLoader.loadClass(serviceInfo.name).newInstance();
@@ -263,14 +260,14 @@ public class BActivityThread extends IBActivityThread.Stub {
                     serviceInfo.packageName,
                     Context.CONTEXT_INCLUDE_CODE | Context.CONTEXT_IGNORE_SECURITY
             );
-            BRContextImpl.get(context).setOuterContext(service);
-            BRService.get(service).attach(
+            BRContextImpl.setOuterContext.call(context,service);
+            BRService.attach.call(service,
                     context,
                     BlackBoxCore.mainThread(),
                     serviceInfo.name,
                     BActivityThread.currentActivityThread().getActivityThread(),
                     mInitialApplication,
-                    BRActivityManagerNative.get().getDefault()
+                    BRActivityManagerNative.getDefault.call()
             );
             ContextCompat.fix(context);
             service.onCreate();
@@ -311,13 +308,13 @@ public class BActivityThread extends IBActivityThread.Stub {
         }
         mProviders.addAll(Arrays.asList(packageInfo.providers));
 
-        Object boundApplication = BRActivityThread.get(BlackBoxCore.mainThread()).mBoundApplication();
+        Object boundApplication = BRActivityThread.mBoundApplication.get(BlackBoxCore.mainThread());
 
         Context packageContext = createPackageContext(applicationInfo);
-        Object loadedApk = BRContextImpl.get(packageContext).mPackageInfo();
-        BRLoadedApk.get(loadedApk)._set_mSecurityViolation(false);
+        Object loadedApk = BRContextImpl.mPackageInfo.get(packageContext);
+        BRLoadedApk.mSecurityViolation.set(loadedApk,false);
         // fix applicationInfo
-        BRLoadedApk.get(loadedApk)._set_mApplicationInfo(applicationInfo);
+        BRLoadedApk.mApplicationInfo.set(loadedApk,applicationInfo);
 
         int targetSdkVersion = applicationInfo.targetSdkVersion;
         if (targetSdkVersion < Build.VERSION_CODES.GINGERBREAD) {
@@ -335,9 +332,9 @@ public class BActivityThread extends IBActivityThread.Stub {
 
         VirtualRuntime.setupRuntime(processName, applicationInfo);
 
-        BRVMRuntime.get(BRVMRuntime.get().getRuntime()).setTargetSdkVersion(applicationInfo.targetSdkVersion);
+        BRVMRuntime.setTargetSdkVersion.call(BRVMRuntime.getRuntime.call(), applicationInfo.targetSdkVersion);
         if (BuildCompat.isS()) {
-            BRCompatibility.get().setTargetSdkVersion(applicationInfo.targetSdkVersion);
+            BRCompatibility.setTargetSdkVersion.call(applicationInfo.targetSdkVersion);
         }
 
         NativeCore.init(Build.VERSION.SDK_INT);
@@ -350,31 +347,30 @@ public class BActivityThread extends IBActivityThread.Stub {
         bindData.info = loadedApk;
         bindData.providers = mProviders;
 
-        ActivityThreadAppBindDataContext activityThreadAppBindData = BRActivityThreadAppBindData.get(boundApplication);
-        activityThreadAppBindData._set_instrumentationName(new ComponentName(bindData.appInfo.packageName, Instrumentation.class.getName()));
-        activityThreadAppBindData._set_appInfo(bindData.appInfo);
-        activityThreadAppBindData._set_info(bindData.info);
-        activityThreadAppBindData._set_processName(bindData.processName);
-        activityThreadAppBindData._set_providers(bindData.providers);
+        BRActivityThread.AppBindData.instrumentationName.set(boundApplication, new ComponentName(bindData.appInfo.packageName, Instrumentation.class.getName()));
+        BRActivityThread.AppBindData.appInfo.set(boundApplication, bindData.appInfo);
+        BRActivityThread.AppBindData.info.set(boundApplication, bindData.info);
+        BRActivityThread.AppBindData.processName.set(boundApplication, bindData.processName);
+        BRActivityThread.AppBindData.providers.set(boundApplication, bindData.providers);
 
         mBoundApplication = bindData;
 
         //ssl适配
-        if (BRNetworkSecurityConfigProvider.getRealClass() != null) {
+        if (BRNetworkSecurityConfigProvider.REF != null) {
             Security.removeProvider("AndroidNSSP");
-            BRNetworkSecurityConfigProvider.get().install(packageContext);
+            BRNetworkSecurityConfigProvider.install.call(packageContext);
         }
         Application application;
         try {
             onBeforeCreateApplication(packageName, processName, packageContext);
-            application = BRLoadedApk.get(loadedApk).makeApplication(false, null);
+            application = BRLoadedApk.makeApplication.call(loadedApk,false, null);
             if(application == null){
                 Log.e(TAG,"makeApplication application Error!" );
                 throw new NullPointerException("application空指针异常");
             }
             mInitialApplication = application;
-            BRActivityThread.get(BlackBoxCore.mainThread())._set_mInitialApplication(mInitialApplication);
-            ContextCompat.fix((Context) BRActivityThread.get(BlackBoxCore.mainThread()).getSystemContext());
+            BRActivityThread.mInitialApplication.set(BlackBoxCore.mainThread(),mInitialApplication);
+            ContextCompat.fix((Context) BRActivityThread.getSystemContext.call(BlackBoxCore.mainThread()));
             ContextCompat.fix(mInitialApplication);
             installProviders(mInitialApplication, bindData.processName, bindData.providers);
 
@@ -461,7 +457,7 @@ public class BActivityThread extends IBActivityThread.Stub {
 
     @Override
     public IBinder getActivityThread() {
-        return BRActivityThread.get(BlackBoxCore.mainThread()).getApplicationThread();
+        return BRActivityThread.getApplicationThread.call(BlackBoxCore.mainThread());
     }
 
     @Override
@@ -490,7 +486,7 @@ public class BActivityThread extends IBActivityThread.Stub {
         for (String auth : split) {
             ContentProviderClient contentProviderClient = BlackBoxCore.getContext()
                     .getContentResolver().acquireContentProviderClient(auth);
-            IInterface iInterface = BRContentProviderClient.get(contentProviderClient).mContentProvider();
+            IInterface iInterface = BRContentProviderClient.mContentProvider.get(contentProviderClient);
             if (iInterface == null)
                 continue;
             return iInterface.asBinder();
@@ -506,7 +502,7 @@ public class BActivityThread extends IBActivityThread.Stub {
     @Override
     public void finishActivity(final IBinder token) {
         mH.post(() -> {
-            Map<IBinder, Object> activities = BRActivityThread.get(BlackBoxCore.mainThread()).mActivities();
+            Map<IBinder, Object> activities = BRActivityThread.mActivities.get(BlackBoxCore.mainThread());
             if (activities.isEmpty())
                 return;
             Object clientRecord = activities.get(token);
@@ -518,10 +514,10 @@ public class BActivityThread extends IBActivityThread.Stub {
                 activity = activity.getParent();
             }
 
-            int resultCode = BRActivity.get(activity).mResultCode();
-            Intent resultData = BRActivity.get(activity).mResultData();
+            int resultCode = BRActivity.mResultCode.get(activity);
+            Intent resultData = BRActivity.mResultData.get(activity);
             ActivityManagerCompat.finishActivity(token, resultCode, resultData);
-            BRActivity.get(activity)._set_mFinished(true);
+            BRActivity.mFinished.set(activity,true);
         });
     }
 
@@ -530,23 +526,23 @@ public class BActivityThread extends IBActivityThread.Stub {
         mH.post(() -> {
             Intent newIntent;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-                newIntent = BRReferrerIntent.get()._new(intent, BlackBoxCore.getHostPkg());
+                newIntent = BRReferrerIntent._new.newInstance(BlackBoxCore.getHostPkg());
             } else {
                 newIntent = intent;
             }
             Object mainThread = BlackBoxCore.mainThread();
-            if (BRActivityThread.get(BlackBoxCore.mainThread())._check_performNewIntents(null, null) != null) {
-                BRActivityThread.get(mainThread).performNewIntents(
+            if (BRActivityThread.performNewIntents.call(BlackBoxCore.mainThread(),null, null) != null) {
+                BRActivityThread.performNewIntents.call(mainThread,
                         token,
                         Collections.singletonList(newIntent)
                 );
-            } else if (BRActivityThreadNMR1.get(mainThread)._check_performNewIntents(null, null, false) != null) {
-                BRActivityThreadNMR1.get(mainThread).performNewIntents(
+            } else if (BRActivityThreadNMR1.performNewIntents.call(mainThread,null, null, false) != null) {
+                BRActivityThreadNMR1.performNewIntents.call(mainThread,
                         token,
                         Collections.singletonList(newIntent),
                         true);
-            } else if (BRActivityThreadQ.get(mainThread)._check_handleNewIntent(null, null) != null) {
-                BRActivityThreadQ.get(mainThread).handleNewIntent(token, Collections.singletonList(newIntent));
+            } else if (BRActivityThreadQ.handleNewIntent.call(mainThread,null, null) != null) {
+                BRActivityThreadQ.handleNewIntent.call(mainThread,token, Collections.singletonList(newIntent));
             }
         });
     }
@@ -568,9 +564,9 @@ public class BActivityThread extends IBActivityThread.Stub {
                 intent.setExtrasClassLoader(classLoader);
 
                 mReceiver = (BroadcastReceiver) classLoader.loadClass(activityInfo.name).newInstance();
-                BRBroadcastReceiver.get(mReceiver).setPendingResult(pendingResult);
+                BRBroadcastReceiver.setPendingResult.call(mReceiver,pendingResult);
                 mReceiver.onReceive(baseContext, intent);
-                BroadcastReceiver.PendingResult finish = BRBroadcastReceiver.get(mReceiver).getPendingResult();
+                BroadcastReceiver.PendingResult finish = BRBroadcastReceiver.getPendingResult.call(mReceiver);
                 if (finish != null) {
                     finish.finish();
                 }
@@ -586,8 +582,8 @@ public class BActivityThread extends IBActivityThread.Stub {
 
     public static Activity getActivityByToken(IBinder token) {
         Map<IBinder, Object> iBinderObjectMap =
-                BRActivityThread.get(BlackBoxCore.mainThread()).mActivities();
-        return BRActivityThreadActivityClientRecord.get(iBinderObjectMap.get(token)).activity();
+                BRActivityThread.mActivities.get(BlackBoxCore.mainThread());
+        return BRActivityThread.ActivityClientRecord.activity.get(iBinderObjectMap.get(token));
     }
 
     private void onBeforeCreateApplication(String packageName, String processName, Context context) {

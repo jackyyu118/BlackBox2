@@ -109,17 +109,15 @@ void enableIO(JNIEnv *env, jclass clazz) {
     nativeHook(env);
 }
 
-bool disableHiddenApi(JNIEnv *env, jclass clazz) {
+void disableHiddenApi(JNIEnv *env, jclass clazz) {
     ALOGD("set disableHiddenApi");
     if(!disable_hidden_api(env)){
         ALOGD("set disableHiddenApi Fail!!!");
-        return false;
     }
-    return true;
 }
 
 static JNINativeMethod gMethods[] = {
-        {"disableHiddenApi", "()Z",                               (void *) disableHiddenApi},
+        {"disableHiddenApi", "()V",                               (void *) disableHiddenApi},
         {"hideXposed", "()V",                                     (void *) hideXposed},
         {"addIORule",  "(Ljava/lang/String;Ljava/lang/String;)V", (void *) addIORule},
         {"enableIO",   "()V",                                     (void *) enableIO},

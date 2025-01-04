@@ -4,8 +4,8 @@ import android.content.Context;
 
 import java.lang.reflect.Method;
 
-import black.android.media.session.BRISessionManagerStub;
-import black.android.os.BRServiceManager;
+import top.niunaijun.blackbox.reflect.android.media.session.BRISessionManager;
+import top.niunaijun.blackbox.reflect.android.os.BRServiceManager;
 import top.niunaijun.blackbox.BlackBoxCore;
 import top.niunaijun.blackbox.fake.hook.BinderInvocationStub;
 import top.niunaijun.blackbox.fake.hook.MethodHook;
@@ -22,12 +22,12 @@ import top.niunaijun.blackbox.fake.hook.ProxyMethod;
 public class IMediaSessionManagerProxy extends BinderInvocationStub {
 
     public IMediaSessionManagerProxy() {
-        super(BRServiceManager.get().getService(Context.MEDIA_SESSION_SERVICE));
+        super(BRServiceManager.getService.call(Context.MEDIA_SESSION_SERVICE));
     }
 
     @Override
     protected Object getWho() {
-        return BRISessionManagerStub.get().asInterface(BRServiceManager.get().getService(Context.MEDIA_SESSION_SERVICE));
+        return BRISessionManager.Stub.asInterface.call(BRServiceManager.getService.call(Context.MEDIA_SESSION_SERVICE));
     }
 
     @Override

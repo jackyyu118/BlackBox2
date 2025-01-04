@@ -1,7 +1,7 @@
 package top.niunaijun.blackbox.fake.service;
 
-import black.android.net.BRIVpnManagerStub;
-import black.android.os.BRServiceManager;
+import top.niunaijun.blackbox.reflect.android.net.BRIVpnManager;
+import top.niunaijun.blackbox.reflect.android.os.BRServiceManager;
 import top.niunaijun.blackbox.fake.hook.BinderInvocationStub;
 import top.niunaijun.blackbox.fake.hook.ScanClass;
 
@@ -19,12 +19,12 @@ public class IVpnManagerProxy extends BinderInvocationStub {
     public static final String VPN_MANAGEMENT_SERVICE = "vpn_management";
 
     public IVpnManagerProxy() {
-        super(BRServiceManager.get().getService(VPN_MANAGEMENT_SERVICE));
+        super(BRServiceManager.getService.call(VPN_MANAGEMENT_SERVICE));
     }
 
     @Override
     protected Object getWho() {
-        return BRIVpnManagerStub.get().asInterface(BRServiceManager.get().getService(VPN_MANAGEMENT_SERVICE));
+        return BRIVpnManager.Stub.asInterface.call(BRServiceManager.getService.call(VPN_MANAGEMENT_SERVICE));
     }
 
     @Override

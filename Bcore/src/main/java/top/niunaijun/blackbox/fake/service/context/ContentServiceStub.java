@@ -2,8 +2,8 @@ package top.niunaijun.blackbox.fake.service.context;
 
 import java.lang.reflect.Method;
 
-import black.android.content.BRIContentServiceStub;
-import black.android.os.BRServiceManager;
+import top.niunaijun.blackbox.reflect.android.content.BRIContentService;
+import top.niunaijun.blackbox.reflect.android.os.BRServiceManager;
 import top.niunaijun.blackbox.fake.hook.BinderInvocationStub;
 import top.niunaijun.blackbox.fake.hook.MethodHook;
 import top.niunaijun.blackbox.fake.hook.ProxyMethod;
@@ -19,12 +19,12 @@ import top.niunaijun.blackbox.fake.hook.ProxyMethod;
 public class ContentServiceStub extends BinderInvocationStub {
 
     public ContentServiceStub() {
-        super(BRServiceManager.get().getService("content"));
+        super(BRServiceManager.getService.call("content"));
     }
 
     @Override
     protected Object getWho() {
-        return BRIContentServiceStub.get().asInterface(BRServiceManager.get().getService("content"));
+        return BRIContentService.Stub.asInterface.call(BRServiceManager.getService.call("content"));
     }
 
     @Override

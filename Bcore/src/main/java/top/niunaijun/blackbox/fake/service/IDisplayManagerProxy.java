@@ -4,7 +4,7 @@ import android.os.IInterface;
 
 import java.lang.reflect.Method;
 
-import black.android.hardware.display.BRDisplayManagerGlobal;
+import top.niunaijun.blackbox.reflect.android.hardware.display.BRDisplayManagerGlobal;
 import top.niunaijun.blackbox.fake.hook.ClassInvocationStub;
 import top.niunaijun.blackbox.fake.hook.MethodHook;
 import top.niunaijun.blackbox.fake.hook.ProxyMethod;
@@ -26,19 +26,19 @@ public class IDisplayManagerProxy extends ClassInvocationStub {
 
     @Override
     protected Object getWho() {
-        return BRDisplayManagerGlobal.get(BRDisplayManagerGlobal.get().getInstance()).mDm();
+        return BRDisplayManagerGlobal.mDm.get(BRDisplayManagerGlobal.getInstance.call());
     }
 
     @Override
     protected void inject(Object baseInvocation, Object proxyInvocation) {
-        Object dmg = BRDisplayManagerGlobal.get().getInstance();
-        BRDisplayManagerGlobal.get(dmg)._set_mDm(getProxyInvocation());
+        Object dmg = BRDisplayManagerGlobal.getInstance.call();
+        BRDisplayManagerGlobal.mDm.set(dmg,getProxyInvocation());
     }
 
     @Override
     public boolean isBadEnv() {
-        Object dmg = BRDisplayManagerGlobal.get().getInstance();
-        IInterface mDm = BRDisplayManagerGlobal.get(dmg).mDm();
+        Object dmg = BRDisplayManagerGlobal.getInstance.call();
+        IInterface mDm = BRDisplayManagerGlobal.mDm.get(dmg);
         return mDm != getProxyInvocation();
     }
 

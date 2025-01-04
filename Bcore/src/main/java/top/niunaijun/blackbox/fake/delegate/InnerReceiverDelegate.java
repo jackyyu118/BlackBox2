@@ -10,7 +10,7 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
-import black.android.content.BRIIntentReceiver;
+import top.niunaijun.blackbox.reflect.android.content.BRIIntentReceiver;
 import top.niunaijun.blackbox.app.BActivityThread;
 import top.niunaijun.blackbox.proxy.record.ProxyBroadcastRecord;
 
@@ -73,7 +73,7 @@ public class InnerReceiverDelegate extends IIntentReceiver.Stub {
         }
         IIntentReceiver iIntentReceiver = mIntentReceiver.get();
         if (iIntentReceiver != null) {
-            BRIIntentReceiver.get(iIntentReceiver).performReceive(perIntent, resultCode, data, extras, ordered, sticky, sendingUser);
+            BRIIntentReceiver.performReceive.call(iIntentReceiver,perIntent, resultCode, data, extras, ordered, sticky, sendingUser);
         }
     }
 }

@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
 import java.io.FileDescriptor;
 import java.util.Map;
 
-import black.android.os.BRServiceManager;
+import top.niunaijun.blackbox.reflect.android.os.BRServiceManager;
 
 /**
  * Created by Milk on 3/30/21.
@@ -81,7 +81,7 @@ public abstract class BinderInvocationStub extends ClassInvocationStub implement
 
 
     protected void replaceSystemService(String name) {
-        Map<String, IBinder> services = BRServiceManager.get().sCache();
+        Map<String, IBinder> services = BRServiceManager.sCache.get();
         services.put(name, this);
     }
 }

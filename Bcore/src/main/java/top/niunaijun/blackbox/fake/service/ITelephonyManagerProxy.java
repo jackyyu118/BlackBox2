@@ -9,8 +9,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import black.android.os.BRServiceManager;
-import black.com.android.internal.telephony.BRITelephonyStub;
+import top.niunaijun.blackbox.reflect.android.os.BRServiceManager;
+import top.niunaijun.blackbox.reflect.com.android.internal.telephony.BRITelephony;
 import top.niunaijun.blackbox.BlackBoxCore;
 import top.niunaijun.blackbox.app.BActivityThread;
 import top.niunaijun.blackbox.entity.location.BCell;
@@ -32,13 +32,13 @@ public class ITelephonyManagerProxy extends BinderInvocationStub {
     public static final String TAG = "ITelephonyManagerProxy";
 
     public ITelephonyManagerProxy() {
-        super(BRServiceManager.get().getService(Context.TELEPHONY_SERVICE));
+        super(BRServiceManager.getService.call(Context.TELEPHONY_SERVICE));
     }
 
     @Override
     protected Object getWho() {
-        IBinder telephony = BRServiceManager.get().getService(Context.TELEPHONY_SERVICE);
-        return BRITelephonyStub.get().asInterface(telephony);
+        IBinder telephony = BRServiceManager.getService.call(Context.TELEPHONY_SERVICE);
+        return BRITelephony.Stub.asInterface.call(telephony);
     }
 
     @Override

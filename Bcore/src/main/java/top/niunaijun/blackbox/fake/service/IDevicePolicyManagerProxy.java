@@ -5,8 +5,8 @@ import android.content.Context;
 
 import java.lang.reflect.Method;
 
-import black.android.app.admin.BRIDevicePolicyManagerStub;
-import black.android.os.BRServiceManager;
+import top.niunaijun.blackbox.reflect.android.app.admin.BRIDevicePolicyManager;
+import top.niunaijun.blackbox.reflect.android.os.BRServiceManager;
 import top.niunaijun.blackbox.fake.hook.BinderInvocationStub;
 import top.niunaijun.blackbox.fake.hook.MethodHook;
 import top.niunaijun.blackbox.fake.hook.ProxyMethod;
@@ -22,12 +22,12 @@ import top.niunaijun.blackbox.utils.MethodParameterUtils;
  */
 public class IDevicePolicyManagerProxy extends BinderInvocationStub {
     public IDevicePolicyManagerProxy() {
-        super(BRServiceManager.get().getService(Context.DEVICE_POLICY_SERVICE));
+        super(BRServiceManager.getService.call(Context.DEVICE_POLICY_SERVICE));
     }
 
     @Override
     protected Object getWho() {
-        return BRIDevicePolicyManagerStub.get().asInterface(BRServiceManager.get().getService(Context.DEVICE_POLICY_SERVICE));
+        return BRIDevicePolicyManager.Stub.asInterface.call(BRServiceManager.getService.call(Context.DEVICE_POLICY_SERVICE));
     }
 
     @Override

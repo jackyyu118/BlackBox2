@@ -2,8 +2,8 @@ package top.niunaijun.blackbox.fake.service;
 
 import java.lang.reflect.Method;
 
-import black.android.os.BRServiceManager;
-import black.com.android.internal.telephony.BRITelephonyRegistryStub;
+import top.niunaijun.blackbox.reflect.android.os.BRServiceManager;
+import top.niunaijun.blackbox.reflect.com.android.internal.telephony.BRITelephonyRegistry;
 import top.niunaijun.blackbox.fake.hook.BinderInvocationStub;
 import top.niunaijun.blackbox.fake.hook.MethodHook;
 import top.niunaijun.blackbox.fake.hook.ProxyMethod;
@@ -19,12 +19,12 @@ import top.niunaijun.blackbox.utils.MethodParameterUtils;
  */
 public class ITelephonyRegistryProxy extends BinderInvocationStub {
     public ITelephonyRegistryProxy() {
-        super(BRServiceManager.get().getService("telephony.registry"));
+        super(BRServiceManager.getService.call("telephony.registry"));
     }
 
     @Override
     protected Object getWho() {
-        return BRITelephonyRegistryStub.get().asInterface(BRServiceManager.get().getService("telephony.registry"));
+        return BRITelephonyRegistry.Stub.asInterface.call(BRServiceManager.getService.call("telephony.registry"));
     }
 
     @Override

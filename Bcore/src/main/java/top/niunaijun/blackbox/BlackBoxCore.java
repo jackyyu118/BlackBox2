@@ -26,9 +26,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import black.android.app.BRActivityThread;
-import black.android.os.BRUserHandle;
-import me.weishu.reflection.Reflection;
+import top.niunaijun.blackbox.reflect.android.app.BRActivityThread;
+import top.niunaijun.blackbox.reflect.android.os.BRUserHandle;
+//import me.weishu.reflection.Reflection;
 import top.canyie.pine.PineConfig;
 import top.niunaijun.blackbox.app.LauncherActivity;
 import top.niunaijun.blackbox.app.configuration.AppLifecycleCallback;
@@ -81,7 +81,7 @@ public class BlackBoxCore extends ClientConfiguration {
     private final List<AppLifecycleCallback> mAppLifecycleCallbacks = new ArrayList<>();
     private final Handler mHandler = new Handler(Looper.getMainLooper());
     private final int mHostUid = Process.myUid();
-    private final int mHostUserId = BRUserHandle.get().myUserId();
+    private final int mHostUserId = BRUserHandle.myUserId.call();
 
     public static BlackBoxCore get() {
         return sBlackBoxCore;
@@ -124,9 +124,9 @@ public class BlackBoxCore extends ClientConfiguration {
             throw new IllegalArgumentException("ClientConfiguration is null!");
         }
 
-        if(!NativeCore.disableHiddenApi()){
-            Reflection.unseal(context);
-        }
+        //取消这种全局设置，因为不好过检测，改成采用hiddenapibypass库
+//        Reflection.unseal(context);
+        NativeCore.disableHiddenApi();
 
         sContext = context;
         mClientConfiguration = clientConfiguration;
@@ -175,7 +175,7 @@ public class BlackBoxCore extends ClientConfiguration {
     }
 
     public static Object mainThread() {
-        return BRActivityThread.get().currentActivityThread();
+        return BRActivityThread.currentActivityThread.call();
     }
 
     public void startActivity(Intent intent, int userId) {

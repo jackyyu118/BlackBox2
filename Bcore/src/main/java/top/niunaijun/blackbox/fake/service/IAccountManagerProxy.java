@@ -8,8 +8,8 @@ import android.os.Bundle;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import black.android.accounts.BRIAccountManagerStub;
-import black.android.os.BRServiceManager;
+import top.niunaijun.blackbox.reflect.android.accounts.BRIAccountManager;
+import top.niunaijun.blackbox.reflect.android.os.BRServiceManager;
 import top.niunaijun.blackbox.fake.frameworks.BAccountManager;
 import top.niunaijun.blackbox.fake.hook.BinderInvocationStub;
 import top.niunaijun.blackbox.fake.hook.MethodHook;
@@ -28,12 +28,12 @@ public class IAccountManagerProxy extends BinderInvocationStub {
     public static final String TAG = "IAccountManagerProxy";
 
     public IAccountManagerProxy() {
-        super(BRServiceManager.get().getService(Context.ACCOUNT_SERVICE));
+        super(BRServiceManager.getService.call(Context.ACCOUNT_SERVICE));
     }
 
     @Override
     protected Object getWho() {
-        return BRIAccountManagerStub.get().asInterface(BRServiceManager.get().getService(Context.ACCOUNT_SERVICE));
+        return BRIAccountManager.Stub.asInterface.call(BRServiceManager.getService.call(Context.ACCOUNT_SERVICE));
     }
 
     @Override

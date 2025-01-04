@@ -4,10 +4,10 @@ import android.app.ActivityManager;
 
 import java.lang.reflect.Method;
 
-import black.android.app.BRActivityTaskManager;
-import black.android.app.BRIActivityTaskManagerStub;
-import black.android.os.BRServiceManager;
-import black.android.util.BRSingleton;
+import top.niunaijun.blackbox.reflect.android.app.BRActivityTaskManager;
+import top.niunaijun.blackbox.reflect.android.app.BRIActivityTaskManager;
+import top.niunaijun.blackbox.reflect.android.os.BRServiceManager;
+import top.niunaijun.blackbox.reflect.android.util.BRSingleton;
 import top.niunaijun.blackbox.fake.hook.BinderInvocationStub;
 import top.niunaijun.blackbox.fake.hook.MethodHook;
 import top.niunaijun.blackbox.fake.hook.ProxyMethod;
@@ -27,20 +27,20 @@ public class IActivityTaskManagerProxy extends BinderInvocationStub {
     public static final String TAG = "ActivityTaskManager";
 
     public IActivityTaskManagerProxy() {
-        super(BRServiceManager.get().getService("activity_task"));
+        super(BRServiceManager.getService.call("activity_task"));
     }
 
     @Override
     protected Object getWho() {
-        return BRIActivityTaskManagerStub.get().asInterface(BRServiceManager.get().getService("activity_task"));
+        return BRIActivityTaskManager.Stub.asInterface.call(BRServiceManager.getService.call("activity_task"));
     }
 
     @Override
     protected void inject(Object baseInvocation, Object proxyInvocation) {
         replaceSystemService("activity_task");
-        BRActivityTaskManager.get().getService();
-        Object o = BRActivityTaskManager.get().IActivityTaskManagerSingleton();
-        BRSingleton.get(o)._set_mInstance(BRIActivityTaskManagerStub.get().asInterface(this));
+
+        Object o = BRActivityTaskManager.IActivityTaskManagerSingleton.get();
+        BRSingleton.mInstance.set(o, BRIActivityTaskManager.Stub.asInterface.call(this));
     }
 
     @Override

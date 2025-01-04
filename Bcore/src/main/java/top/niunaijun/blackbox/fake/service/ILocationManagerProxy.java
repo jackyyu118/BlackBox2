@@ -3,19 +3,16 @@ package top.niunaijun.blackbox.fake.service;
 import android.content.Context;
 import android.location.LocationManager;
 import android.os.IInterface;
-import android.util.Log;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Objects;
 
-import black.android.location.BRILocationListener;
-import black.android.location.BRILocationManagerStub;
-import black.android.location.provider.BRProviderProperties;
-import black.android.location.provider.ProviderProperties;
-import black.android.os.BRServiceManager;
+import top.niunaijun.blackbox.reflect.android.location.BRILocationListener;
+import top.niunaijun.blackbox.reflect.android.location.BRILocationManager;
+import top.niunaijun.blackbox.reflect.android.location.provider.BRProviderProperties;
+import top.niunaijun.blackbox.reflect.android.os.BRServiceManager;
 import top.niunaijun.blackbox.app.BActivityThread;
-import top.niunaijun.blackbox.entity.location.BLocation;
 import top.niunaijun.blackbox.fake.frameworks.BLocationManager;
 import top.niunaijun.blackbox.fake.hook.BinderInvocationStub;
 import top.niunaijun.blackbox.fake.hook.MethodHook;
@@ -34,12 +31,12 @@ public class ILocationManagerProxy extends BinderInvocationStub {
     public static final String TAG = "ILocationManagerProxy";
 
     public ILocationManagerProxy() {
-        super(BRServiceManager.get().getService(Context.LOCATION_SERVICE));
+        super(BRServiceManager.getService.call(Context.LOCATION_SERVICE));
     }
 
     @Override
     protected Object getWho() {
-        return BRILocationManagerStub.get().asInterface(BRServiceManager.get().getService(Context.LOCATION_SERVICE));
+        return BRILocationManager.Stub.asInterface.call(BRServiceManager.getService.call(Context.LOCATION_SERVICE));
     }
 
     @Override
@@ -130,9 +127,9 @@ public class ILocationManagerProxy extends BinderInvocationStub {
         protected Object hook(Object who, Method method, Object[] args) throws Throwable {
             Object providerProperties = method.invoke(who, args);
             if (BLocationManager.isFakeLocationEnable()) {
-                BRProviderProperties.get(providerProperties)._set_mHasNetworkRequirement(false);
+                BRProviderProperties.mHasNetworkRequirement.set(providerProperties,false);
                 if (BLocationManager.get().getCell(BActivityThread.getUserId(), BActivityThread.getAppPackageName()) == null) {
-                    BRProviderProperties.get(providerProperties)._set_mHasCellRequirement(false);
+                    BRProviderProperties.mHasCellRequirement.set(providerProperties,false);
                 }
             }
             return method.invoke(who, args);

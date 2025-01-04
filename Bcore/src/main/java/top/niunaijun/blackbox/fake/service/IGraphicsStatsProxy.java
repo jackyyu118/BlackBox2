@@ -2,8 +2,8 @@ package top.niunaijun.blackbox.fake.service;
 
 import java.lang.reflect.Method;
 
-import black.android.os.BRServiceManager;
-import black.android.view.BRIGraphicsStatsStub;
+import top.niunaijun.blackbox.reflect.android.os.BRServiceManager;
+import top.niunaijun.blackbox.reflect.android.view.BRIGraphicsStats;
 import top.niunaijun.blackbox.fake.hook.BinderInvocationStub;
 import top.niunaijun.blackbox.fake.hook.MethodHook;
 import top.niunaijun.blackbox.fake.hook.ProxyMethod;
@@ -20,12 +20,12 @@ import top.niunaijun.blackbox.utils.MethodParameterUtils;
 public class IGraphicsStatsProxy extends BinderInvocationStub {
 
     public IGraphicsStatsProxy() {
-        super(BRServiceManager.get().getService("graphicsstats"));
+        super(BRServiceManager.getService.call("graphicsstats"));
     }
 
     @Override
     protected Object getWho() {
-        return BRIGraphicsStatsStub.get().asInterface(BRServiceManager.get().getService("graphicsstats"));
+        return BRIGraphicsStats.Stub.asInterface.call(BRServiceManager.getService.call("graphicsstats"));
     }
 
     @Override

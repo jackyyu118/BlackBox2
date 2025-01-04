@@ -54,8 +54,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import black.com.android.internal.BRRstyleable;
-import black.com.android.internal.RstyleableStatic;
+import top.niunaijun.blackbox.reflect.com.android.internal.BRR;
 import top.niunaijun.blackbox.BlackBoxCore;
 import top.niunaijun.blackbox.core.env.BEnvironment;
 import top.niunaijun.blackbox.core.system.BProcessManagerService;
@@ -1384,22 +1383,20 @@ public class BAccountManagerService extends IBAccountManagerService.Stub impleme
         final Map<String, AuthenticatorInfo> authenticators = new HashMap<>();
     }
 
-    private static AuthenticatorDescription parseAuthenticatorDescription(Resources resources, String packageName,
-                                                                          AttributeSet attributeSet) {
-        RstyleableStatic rstyleableStatic = BRRstyleable.get();
-        TypedArray array = resources.obtainAttributes(attributeSet, rstyleableStatic.AccountAuthenticator());
+    private static AuthenticatorDescription parseAuthenticatorDescription(Resources resources, String packageName, AttributeSet attributeSet) {
+        TypedArray array = resources.obtainAttributes(attributeSet, ArrayUtils.toInt(BRR.styleable.AccountAuthenticator.get()));
         try {
-            String accountType = array.getString(rstyleableStatic.AccountAuthenticator_accountType());
-            int label = array.getResourceId(rstyleableStatic.AccountAuthenticator_label(), 0);
-            int icon = array.getResourceId(rstyleableStatic.AccountAuthenticator_icon(), 0);
-            int smallIcon = array.getResourceId(rstyleableStatic.AccountAuthenticator_smallIcon(), 0);
-            int accountPreferences = array.getResourceId(rstyleableStatic.AccountAuthenticator_accountPreferences(), 0);
-            boolean customTokens = array.getBoolean(rstyleableStatic.AccountAuthenticator_customTokens(), false);
+            String accountType = array.getString(BRR.styleable.AccountAuthenticator_accountType.get());
+            int label = array.getResourceId(BRR.styleable.AccountAuthenticator_label.get(), 0);
+            int icon = array.getResourceId(BRR.styleable.AccountAuthenticator_icon.get(), 0);
+            int smallIcon = array.getResourceId(BRR.styleable.AccountAuthenticator_smallIcon.get(), 0);
+            int accountPreferences = array.getResourceId(BRR.styleable.AccountAuthenticator_accountPreferences.get(), 0);
+            boolean customTokens = array.getBoolean(BRR.styleable.AccountAuthenticator_customTokens.get(), false);
+
             if (TextUtils.isEmpty(accountType)) {
                 return null;
             }
-            return new AuthenticatorDescription(accountType, packageName, label, icon, smallIcon, accountPreferences,
-                    customTokens);
+            return new AuthenticatorDescription(accountType, packageName, label, icon, smallIcon, accountPreferences, customTokens);
         } finally {
             array.recycle();
         }

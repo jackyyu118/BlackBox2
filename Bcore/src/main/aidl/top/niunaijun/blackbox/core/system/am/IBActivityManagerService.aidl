@@ -7,7 +7,6 @@ import android.content.pm.ServiceInfo;
 import android.content.pm.ProviderInfo;
 import android.os.IBinder;
 import java.lang.String;
-import android.app.IServiceConnection;
 import top.niunaijun.blackbox.entity.AppConfig;
 import top.niunaijun.blackbox.entity.UnbindRecord;
 import android.os.Bundle;

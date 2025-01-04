@@ -5,8 +5,8 @@ import android.os.IBinder;
 
 import java.lang.reflect.Method;
 
-import black.android.app.BRActivityClient;
-import black.android.util.BRSingleton;
+import top.niunaijun.blackbox.reflect.android.app.BRActivityClient;
+import top.niunaijun.blackbox.reflect.android.util.BRSingleton;
 import top.niunaijun.blackbox.fake.frameworks.BActivityManager;
 import top.niunaijun.blackbox.fake.hook.ClassInvocationStub;
 import top.niunaijun.blackbox.fake.hook.MethodHook;
@@ -29,16 +29,16 @@ public class IActivityClientProxy extends ClassInvocationStub {
         if (who != null) {
             return who;
         }
-        Object instance = BRActivityClient.get().getInstance();
-        Object singleton = BRActivityClient.get(instance).INTERFACE_SINGLETON();
-        return BRSingleton.get(singleton).get();
+        Object instance = BRActivityClient.getInstance.call();
+        Object singleton = BRActivityClient.INTERFACE_SINGLETON.get(instance);
+        return BRSingleton.get.call(singleton);
     }
 
     @Override
     protected void inject(Object baseInvocation, Object proxyInvocation) {
-        Object instance = BRActivityClient.get().getInstance();
-        Object singleton = BRActivityClient.get(instance).INTERFACE_SINGLETON();
-        BRSingleton.get(singleton)._set_mInstance(proxyInvocation);
+        Object instance = BRActivityClient.getInstance.call();
+        Object singleton = BRActivityClient.INTERFACE_SINGLETON.get(instance);
+        BRSingleton.mInstance.set(singleton, proxyInvocation);
     }
 
     @Override

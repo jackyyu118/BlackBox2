@@ -5,9 +5,9 @@ import android.os.storage.StorageVolume;
 
 import java.lang.reflect.Method;
 
-import black.android.os.BRServiceManager;
-import black.android.os.mount.BRIMountServiceStub;
-import black.android.os.storage.BRIStorageManagerStub;
+import top.niunaijun.blackbox.reflect.android.os.BRServiceManager;
+import top.niunaijun.blackbox.reflect.android.os.mount.BRIMountService;
+import top.niunaijun.blackbox.reflect.android.os.storage.BRIStorageManager;
 import top.niunaijun.blackbox.BlackBoxCore;
 import top.niunaijun.blackbox.app.BActivityThread;
 import top.niunaijun.blackbox.fake.hook.BinderInvocationStub;
@@ -26,16 +26,16 @@ import top.niunaijun.blackbox.utils.compat.BuildCompat;
 public class IStorageManagerProxy extends BinderInvocationStub {
 
     public IStorageManagerProxy() {
-        super(BRServiceManager.get().getService("mount"));
+        super(BRServiceManager.getService.call("mount"));
     }
 
     @Override
     protected Object getWho() {
         IInterface mount;
         if (BuildCompat.isOreo()) {
-            mount = BRIStorageManagerStub.get().asInterface(BRServiceManager.get().getService("mount"));
+            mount = BRIStorageManager.Stub.asInterface.call(BRServiceManager.getService.call("mount"));
         } else {
-            mount = BRIMountServiceStub.get().asInterface(BRServiceManager.get().getService("mount"));
+            mount = BRIMountService.Stub.asInterface.call(BRServiceManager.getService.call("mount"));
         }
         return mount;
     }

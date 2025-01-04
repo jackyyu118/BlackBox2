@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import black.android.app.BRActivityThread;
-import black.android.app.BRContextImpl;
+import top.niunaijun.blackbox.reflect.android.app.BRActivityThread;
+import top.niunaijun.blackbox.reflect.android.app.BRContextImpl;
 import top.niunaijun.blackbox.BlackBoxCore;
 import top.niunaijun.blackbox.app.BActivityThread;
 import top.niunaijun.blackbox.core.env.AppSystemEnv;
@@ -43,20 +43,20 @@ public class IPackageManagerProxy extends BinderInvocationStub {
     public static final String TAG = "PackageManagerStub";
 
     public IPackageManagerProxy() {
-        super(BRActivityThread.get().sPackageManager().asBinder());
+        super(BRActivityThread.sPackageManager.get().asBinder());
     }
 
     @Override
     protected Object getWho() {
-        return BRActivityThread.get().sPackageManager();
+        return BRActivityThread.sPackageManager.get();
     }
 
     @Override
     protected void inject(Object baseInvocation, Object proxyInvocation) {
-        BRActivityThread.get()._set_sPackageManager(proxyInvocation);
+        BRActivityThread.sPackageManager.set(proxyInvocation);
         replaceSystemService("package");
-        Object systemContext = BRActivityThread.get(BlackBoxCore.mainThread()).getSystemContext();
-        PackageManager packageManager = BRContextImpl.get(systemContext).mPackageManager();
+        Object systemContext = BRActivityThread.getSystemContext.call(BlackBoxCore.mainThread());
+        PackageManager packageManager = BRContextImpl.mPackageManager.get(systemContext);
         if (packageManager != null) {
             try {
                 Reflector.on("android.app.ApplicationPackageManager")

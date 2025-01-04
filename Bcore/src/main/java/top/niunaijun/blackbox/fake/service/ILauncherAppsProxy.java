@@ -4,8 +4,8 @@ import android.content.Context;
 
 import java.lang.reflect.Method;
 
-import black.android.content.pm.BRILauncherAppsStub;
-import black.android.os.BRServiceManager;
+import top.niunaijun.blackbox.reflect.android.content.pm.BRILauncherApps;
+import top.niunaijun.blackbox.reflect.android.os.BRServiceManager;
 import top.niunaijun.blackbox.fake.hook.BinderInvocationStub;
 import top.niunaijun.blackbox.utils.MethodParameterUtils;
 
@@ -20,12 +20,12 @@ import top.niunaijun.blackbox.utils.MethodParameterUtils;
 public class ILauncherAppsProxy extends BinderInvocationStub {
 
     public ILauncherAppsProxy() {
-        super(BRServiceManager.get().getService(Context.LAUNCHER_APPS_SERVICE));
+        super(BRServiceManager.getService.call(Context.LAUNCHER_APPS_SERVICE));
     }
 
     @Override
     protected Object getWho() {
-        return BRILauncherAppsStub.get().asInterface(BRServiceManager.get().getService(Context.LAUNCHER_APPS_SERVICE));
+        return BRILauncherApps.Stub.asInterface.call(BRServiceManager.getService.call(Context.LAUNCHER_APPS_SERVICE));
     }
 
     @Override

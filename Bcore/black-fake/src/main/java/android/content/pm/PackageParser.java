@@ -235,6 +235,13 @@ public class PackageParser {
         throw new RuntimeException("Stub!");
     }
 
+    public static void collectCertificates(Package pkg, boolean skipVerify) throws PackageParserException {
+        throw new RuntimeException("Stub!");
+    }
+
+    private static void collectCertificates(Package pkg, File apkFile, boolean skipVerify) throws PackageParserException {
+        throw new RuntimeException("Stub!");
+    }
     /**
      * Utility method that retrieves lightweight details about a single APK
      * file, including package name, split name, and install location.

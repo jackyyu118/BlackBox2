@@ -5,11 +5,11 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
 
-import black.android.app.BRActivity;
-import black.android.app.BRActivityManagerNative;
-import black.android.app.BRIActivityManager;
-import black.android.app.BRIActivityManagerL;
-import black.android.app.BRIActivityManagerN;
+import top.niunaijun.blackbox.reflect.android.app.BRActivity;
+import top.niunaijun.blackbox.reflect.android.app.BRActivityManagerNative;
+import top.niunaijun.blackbox.reflect.android.app.BRIActivityManager;
+import top.niunaijun.blackbox.reflect.android.app.BRIActivityManagerL;
+import top.niunaijun.blackbox.reflect.android.app.BRIActivityManagerN;
 
 public class ActivityManagerCompat {
 	/** Type for IActivityManager.serviceDoneExecuting: anonymous operation */
@@ -76,10 +76,10 @@ public class ActivityManagerCompat {
 
 	public static boolean finishActivity(IBinder token, int code, Intent data) {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-			return BRIActivityManagerN.get(BRActivityManagerNative.get().getDefault()).finishActivity(
+			return BRIActivityManagerN.finishActivity.call(BRActivityManagerNative.getDefault.call(),
 					token, code, data, 0);
 		} else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-			return BRIActivityManagerL.get(BRActivityManagerNative.get().getDefault()).finishActivity(
+			return BRIActivityManagerL.finishActivity.call(BRActivityManagerNative.getDefault.call(),
 						token, code, data, false);
 		}
 		return false;
@@ -92,18 +92,18 @@ public class ActivityManagerCompat {
         } catch (Throwable e) {
             e.printStackTrace();
             //samsung is WindowManager.setRequestedOrientation
-            Activity parent =  BRActivity.get(activity).mParent();
+            Activity parent =  BRActivity.mParent.get(activity);
             while (true) {
-				Activity tmp = BRActivity.get(parent).mParent();
+				Activity tmp = BRActivity.mParent.get(parent);
 				if (tmp != null) {
 					parent = tmp;
 				} else {
 					break;
 				}
 			}
-            IBinder token = BRActivity.get(parent).mToken();
+            IBinder token = BRActivity.mToken.get(parent);
             try {
-				BRIActivityManager.get(BRActivityManagerNative.get().getDefault()).setRequestedOrientation(token, orientation);
+				BRIActivityManager.setRequestedOrientation.call(BRActivityManagerNative.getDefault.call(),token, orientation);
             }catch (Throwable ex){
                 ex.printStackTrace();
             }

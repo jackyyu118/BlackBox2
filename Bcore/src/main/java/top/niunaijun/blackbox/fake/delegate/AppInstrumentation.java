@@ -12,8 +12,8 @@ import android.util.Log;
 
 import java.lang.reflect.Field;
 
-import black.android.app.BRActivity;
-import black.android.app.BRActivityThread;
+import top.niunaijun.blackbox.reflect.android.app.BRActivity;
+import top.niunaijun.blackbox.reflect.android.app.BRActivityThread;
 import top.niunaijun.blackbox.BlackBoxCore;
 import top.niunaijun.blackbox.app.BActivityThread;
 import top.niunaijun.blackbox.fake.hook.HookManager;
@@ -52,7 +52,7 @@ public final class AppInstrumentation extends BaseInstrumentationDelegate implem
             if (mInstrumentation == this || checkInstrumentation(mInstrumentation))
                 return;
             mBaseInstrumentation = (Instrumentation) mInstrumentation;
-            BRActivityThread.get(BlackBoxCore.mainThread())._set_mInstrumentation(this);
+            BRActivityThread.mInstrumentation.set(BlackBoxCore.mainThread(),this);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -60,7 +60,7 @@ public final class AppInstrumentation extends BaseInstrumentationDelegate implem
 
     private Instrumentation getCurrInstrumentation() {
         Object currentActivityThread = BlackBoxCore.mainThread();
-        return BRActivityThread.get(currentActivityThread).mInstrumentation();
+        return BRActivityThread.mInstrumentation.get(currentActivityThread);
     }
 
     @Override
@@ -106,7 +106,7 @@ public final class AppInstrumentation extends BaseInstrumentationDelegate implem
         HackAppUtils.enableQQLogOutput(activity.getPackageName(), activity.getClassLoader());
         checkHCallback();
         HookManager.get().checkEnv(IActivityClientProxy.class);
-        ActivityInfo info = BRActivity.get(activity).mActivityInfo();
+        ActivityInfo info = BRActivity.mActivityInfo.get(activity);
         ContextCompat.fix(activity);
         ActivityCompat.fix(activity);
         if (info.theme != 0) {

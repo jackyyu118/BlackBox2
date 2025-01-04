@@ -17,15 +17,12 @@ import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
-import black.android.app.BRActivityManagerNative;
-import black.android.app.BRActivityManagerOreo;
-import black.android.app.BRLoadedApkReceiverDispatcher;
-import black.android.app.BRLoadedApkReceiverDispatcherInnerReceiver;
-import black.android.app.BRLoadedApkServiceDispatcher;
-import black.android.app.BRLoadedApkServiceDispatcherInnerConnection;
-import black.android.content.BRContentProviderNative;
-import black.android.content.pm.BRUserInfo;
-import black.android.util.BRSingleton;
+import top.niunaijun.blackbox.reflect.android.app.BRActivityManagerNative;
+import top.niunaijun.blackbox.reflect.android.app.BRActivityManagerOreo;
+import top.niunaijun.blackbox.reflect.android.app.BRLoadedApk;
+import top.niunaijun.blackbox.reflect.android.content.BRContentProviderNative;
+import top.niunaijun.blackbox.reflect.android.content.pm.BRUserInfo;
+import top.niunaijun.blackbox.reflect.android.util.BRSingleton;
 import top.niunaijun.blackbox.BlackBoxCore;
 import top.niunaijun.blackbox.app.BActivityThread;
 import top.niunaijun.blackbox.core.env.AppSystemEnv;
@@ -72,22 +69,22 @@ public class IActivityManagerProxy extends ClassInvocationStub {
     protected Object getWho() {
         Object iActivityManager = null;
         if (BuildCompat.isOreo()) {
-            iActivityManager = BRActivityManagerOreo.get().IActivityManagerSingleton();
+            iActivityManager = BRActivityManagerOreo.IActivityManagerSingleton.get();
         } else if (BuildCompat.isL()) {
-            iActivityManager = BRActivityManagerNative.get().gDefault();
+            iActivityManager = BRActivityManagerNative.gDefault.get();
         }
-        return BRSingleton.get(iActivityManager).get();
+        return BRSingleton.get.call(iActivityManager);
     }
 
     @Override
     protected void inject(Object base, Object proxy) {
         Object iActivityManager = null;
         if (BuildCompat.isOreo()) {
-            iActivityManager = BRActivityManagerOreo.get().IActivityManagerSingleton();
+            iActivityManager = BRActivityManagerOreo.IActivityManagerSingleton.get();
         } else if (BuildCompat.isL()) {
-            iActivityManager = BRActivityManagerNative.get().gDefault();
+            iActivityManager = BRActivityManagerNative.gDefault.get();
         }
-        BRSingleton.get(iActivityManager)._set_mInstance(proxy);
+        BRSingleton.mInstance.set(iActivityManager, proxy);
     }
 
     @Override
@@ -163,7 +160,7 @@ public class IActivityManagerProxy extends ClassInvocationStub {
                             .set(providerInfo);
                     Reflector.with(content)
                             .field("provider")
-                            .set(new ContentProviderStub().wrapper(BRContentProviderNative.get().asInterface(providerBinder), BActivityThread.getAppPackageName()));
+                            .set(new ContentProviderStub().wrapper(BRContentProviderNative.asInterface.call(providerBinder), BActivityThread.getAppPackageName()));
                 }
 
                 return content;
@@ -257,9 +254,9 @@ public class IActivityManagerProxy extends ClassInvocationStub {
                     IServiceConnection proxy = ServiceConnectionDelegate.createProxy(connection, intent);
                     args[4] = proxy;
 
-                    WeakReference<?> weakReference = BRLoadedApkServiceDispatcherInnerConnection.get(connection).mDispatcher();
+                    WeakReference<?> weakReference = BRLoadedApk.ServiceDispatcher.InnerConnection.mDispatcher.get(connection);
                     if (weakReference != null) {
-                        BRLoadedApkServiceDispatcher.get(weakReference.get())._set_mConnection(proxy);
+                        BRLoadedApk.ServiceDispatcher.mConnection.set(weakReference.get(), proxy);
                     }
                 }
                 if (proxyIntent != null) {
@@ -505,9 +502,9 @@ public class IActivityManagerProxy extends ClassInvocationStub {
                 IIntentReceiver intentReceiver = (IIntentReceiver) args[receiverIndex];
                 IIntentReceiver proxy = InnerReceiverDelegate.createProxy(intentReceiver);
 
-                WeakReference<?> weakReference = BRLoadedApkReceiverDispatcherInnerReceiver.get(intentReceiver).mDispatcher();
+                WeakReference<?> weakReference = BRLoadedApk.ReceiverDispatcher.InnerReceiver.mDispatcher.get(intentReceiver);
                 if (weakReference != null) {
-                    BRLoadedApkReceiverDispatcher.get(weakReference.get())._set_mIIntentReceiver(proxy);
+                    BRLoadedApk.ReceiverDispatcher.mIIntentReceiver.set(weakReference.get());
                 }
 
                 args[receiverIndex] = proxy;
@@ -571,7 +568,7 @@ public class IActivityManagerProxy extends ClassInvocationStub {
     public static class getCurrentUser extends MethodHook {
         @Override
         protected Object hook(Object who, Method method, Object[] args) throws Throwable {
-            Object blackBox = BRUserInfo.get()._new(BActivityThread.getUserId(), "BlackBox", BRUserInfo.get().FLAG_PRIMARY());
+            Object blackBox = BRUserInfo._new.newInstance(BActivityThread.getUserId(), "BlackBox", BRUserInfo.FLAG_PRIMARY.get());
             return blackBox;
         }
     }

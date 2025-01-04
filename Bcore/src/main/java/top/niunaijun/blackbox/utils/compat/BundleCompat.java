@@ -5,14 +5,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 
-import black.android.os.BRBundle;
+import top.niunaijun.blackbox.reflect.android.os.BRBundle;
 
 public class BundleCompat {
     public static IBinder getBinder(Bundle bundle, String key) {
         if (Build.VERSION.SDK_INT >= 18) {
             return bundle.getBinder(key);
         } else {
-            return BRBundle.get(bundle).getIBinder(key);
+            return BRBundle.getIBinder.call(bundle,key);
         }
     }
 
@@ -20,7 +20,7 @@ public class BundleCompat {
         if (Build.VERSION.SDK_INT >= 18) {
             bundle.putBinder(key, value);
         } else {
-            BRBundle.get(bundle).putIBinder(key, value);
+            BRBundle.putIBinder.call(bundle,key, value);
         }
     }
 

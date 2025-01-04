@@ -6,9 +6,9 @@ import android.os.IBinder;
 
 import java.lang.reflect.Method;
 
-import black.android.app.BRAppOpsManager;
-import black.android.os.BRServiceManager;
-import black.com.android.internal.app.BRIAppOpsServiceStub;
+import top.niunaijun.blackbox.reflect.android.app.BRAppOpsManager;
+import top.niunaijun.blackbox.reflect.android.os.BRServiceManager;
+import top.niunaijun.blackbox.reflect.com.android.internal.app.BRIAppOpsService;
 import top.niunaijun.blackbox.BlackBoxCore;
 import top.niunaijun.blackbox.fake.hook.BinderInvocationStub;
 import top.niunaijun.blackbox.fake.hook.MethodHook;
@@ -25,21 +25,21 @@ import top.niunaijun.blackbox.utils.MethodParameterUtils;
  */
 public class IAppOpsManagerProxy extends BinderInvocationStub {
     public IAppOpsManagerProxy() {
-        super(BRServiceManager.get().getService(Context.APP_OPS_SERVICE));
+        super(BRServiceManager.getService.call(Context.APP_OPS_SERVICE));
     }
 
     @Override
     protected Object getWho() {
-        IBinder call = BRServiceManager.get().getService(Context.APP_OPS_SERVICE);
-        return BRIAppOpsServiceStub.get().asInterface(call);
+        IBinder call = BRServiceManager.getService.call(Context.APP_OPS_SERVICE);
+        return BRIAppOpsService.Stub.asInterface.call(call);
     }
 
     @Override
     protected void inject(Object baseInvocation, Object proxyInvocation) {
-        if (BRAppOpsManager.get(null)._check_mService() != null) {
+        if (BRAppOpsManager.mService != null) {
             AppOpsManager appOpsManager = (AppOpsManager) BlackBoxCore.getContext().getSystemService(Context.APP_OPS_SERVICE);
             try {
-                BRAppOpsManager.get(appOpsManager)._set_mService(getProxyInvocation());
+                BRAppOpsManager.mService.set(appOpsManager,getProxyInvocation());
             } catch (Exception e) {
                 e.printStackTrace();
             }

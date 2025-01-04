@@ -6,8 +6,8 @@ import android.os.IBinder;
 
 import java.lang.reflect.Method;
 
-import black.android.app.job.BRIJobSchedulerStub;
-import black.android.os.BRServiceManager;
+import top.niunaijun.blackbox.reflect.android.app.job.BRIJobScheduler;
+import top.niunaijun.blackbox.reflect.android.os.BRServiceManager;
 import top.niunaijun.blackbox.BlackBoxCore;
 import top.niunaijun.blackbox.app.BActivityThread;
 import top.niunaijun.blackbox.fake.hook.BinderInvocationStub;
@@ -26,13 +26,13 @@ public class IJobServiceProxy extends BinderInvocationStub {
     public static final String TAG = "JobServiceStub";
 
     public IJobServiceProxy() {
-        super(BRServiceManager.get().getService(Context.JOB_SCHEDULER_SERVICE));
+        super(BRServiceManager.getService.call(Context.JOB_SCHEDULER_SERVICE));
     }
 
     @Override
     protected Object getWho() {
-        IBinder jobScheduler = BRServiceManager.get().getService("jobscheduler");
-        return BRIJobSchedulerStub.get().asInterface(jobScheduler);
+        IBinder jobScheduler = BRServiceManager.getService.call("jobscheduler");
+        return BRIJobScheduler.Stub.asInterface.call(jobScheduler);
     }
 
     @Override

@@ -8,10 +8,7 @@ import android.os.Parcelable;
 
 import java.util.UUID;
 
-import black.android.content.BRBroadcastReceiverPendingResult;
-import black.android.content.BRBroadcastReceiverPendingResultM;
-import black.android.content.BroadcastReceiverPendingResultContext;
-import black.android.content.BroadcastReceiverPendingResultMContext;
+import top.niunaijun.blackbox.reflect.android.content.BRBroadcastReceiver;
 import top.niunaijun.blackbox.utils.compat.BuildCompat;
 
 /**
@@ -34,37 +31,34 @@ public class PendingResultData implements Parcelable {
     public PendingResultData(BroadcastReceiver.PendingResult pendingResult) {
         mBToken = UUID.randomUUID().toString();
         if (BuildCompat.isM()) {
-            BroadcastReceiverPendingResultMContext resultMContext = BRBroadcastReceiverPendingResultM.get(pendingResult);
-            mType = resultMContext.mType();
-            mOrderedHint = resultMContext.mOrderedHint();
-            mInitialStickyHint = resultMContext.mInitialStickyHint();
-            mToken = resultMContext.mToken();
-            mSendingUser = resultMContext.mSendingUser();
-            mFlags = resultMContext.mFlags();
-            mResultData = resultMContext.mResultData();
-            mResultExtras = resultMContext.mResultExtras();
-            mAbortBroadcast = resultMContext.mAbortBroadcast();
-            mFinished = resultMContext.mFinished();
+            this.mType = BRBroadcastReceiver.PendingResultM.mType.get(pendingResult);
+            this.mOrderedHint = BRBroadcastReceiver.PendingResultM.mOrderedHint.get(pendingResult);
+            this.mInitialStickyHint = BRBroadcastReceiver.PendingResultM.mInitialStickyHint.get(pendingResult);
+            this.mToken = BRBroadcastReceiver.PendingResultM.mToken.get(pendingResult);
+            this.mSendingUser = BRBroadcastReceiver.PendingResultM.mSendingUser.get(pendingResult);
+            this.mFlags = BRBroadcastReceiver.PendingResultM.mFlags.get(pendingResult);
+            this.mResultData = BRBroadcastReceiver.PendingResultM.mResultData.get(pendingResult);
+            this.mResultExtras = BRBroadcastReceiver.PendingResultM.mResultExtras.get(pendingResult);
+            this.mAbortBroadcast = BRBroadcastReceiver.PendingResultM.mAbortBroadcast.get(pendingResult);
+            this.mFinished = BRBroadcastReceiver.PendingResultM.mFinished.get(pendingResult);
         } else {
-            BroadcastReceiverPendingResultContext resultContext = BRBroadcastReceiverPendingResult.get(pendingResult);
-            mType = resultContext.mType();
-            mOrderedHint = resultContext.mOrderedHint();
-            mInitialStickyHint = resultContext.mInitialStickyHint();
-            mToken = resultContext.mToken();
-            mSendingUser = resultContext.mSendingUser();
-            mResultData = resultContext.mResultData();
-            mResultExtras = resultContext.mResultExtras();
-            mAbortBroadcast = resultContext.mAbortBroadcast();
-            mFinished = resultContext.mFinished();
+            this.mType = BRBroadcastReceiver.PendingResult.mType.get(pendingResult);
+            this.mOrderedHint = BRBroadcastReceiver.PendingResult.mOrderedHint.get(pendingResult);
+            this.mInitialStickyHint = BRBroadcastReceiver.PendingResult.mInitialStickyHint.get(pendingResult);
+            this.mToken = BRBroadcastReceiver.PendingResult.mToken.get(pendingResult);
+            this.mSendingUser = BRBroadcastReceiver.PendingResult.mSendingUser.get(pendingResult);
+            this.mResultData = BRBroadcastReceiver.PendingResult.mResultData.get(pendingResult);
+            this.mResultExtras = BRBroadcastReceiver.PendingResult.mResultExtras.get(pendingResult);
+            this.mAbortBroadcast = BRBroadcastReceiver.PendingResult.mAbortBroadcast.get(pendingResult);
+            this.mFinished = BRBroadcastReceiver.PendingResult.mFinished.get(pendingResult);
         }
     }
 
     public BroadcastReceiver.PendingResult build() {
         if (BuildCompat.isM()) {
-            return BRBroadcastReceiverPendingResultM.get()._new(mResultCode, mResultData, mResultExtras, mType, mOrderedHint, mInitialStickyHint, mToken, mSendingUser, mFlags);
-        } else {
-            return BRBroadcastReceiverPendingResult.get()._new(mResultCode, mResultData, mResultExtras, mType, mOrderedHint, mInitialStickyHint, mToken, mSendingUser);
+            return BRBroadcastReceiver.PendingResultM._new.newInstance(mResultCode, mResultData, mResultExtras, mType, mOrderedHint, mInitialStickyHint, mToken, mSendingUser, mFlags);
         }
+        return BRBroadcastReceiver.PendingResult._new.newInstance(mResultCode, mResultData, mResultExtras, mType, mOrderedHint, mInitialStickyHint, mToken, mSendingUser);
     }
 
 

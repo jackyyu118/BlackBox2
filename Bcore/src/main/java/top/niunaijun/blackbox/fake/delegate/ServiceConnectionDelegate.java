@@ -9,7 +9,7 @@ import android.os.RemoteException;
 import java.util.HashMap;
 import java.util.Map;
 
-import black.android.app.BRIServiceConnectionO;
+import top.niunaijun.blackbox.reflect.android.app.BRIServiceConnectionO;
 import top.niunaijun.blackbox.utils.compat.BuildCompat;
 
 /**
@@ -62,7 +62,7 @@ public class ServiceConnectionDelegate extends IServiceConnection.Stub {
 
     public void connected(ComponentName name, IBinder service, boolean dead) throws RemoteException {
         if (BuildCompat.isOreo()) {
-            BRIServiceConnectionO.get(mConn).connected(mComponentName, service, dead);
+            BRIServiceConnectionO.connected.call(mConn,mComponentName, service, dead);
         } else {
             mConn.connected(name, service);
         }

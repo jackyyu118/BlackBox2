@@ -2,8 +2,8 @@ package top.niunaijun.blackbox.fake.service;
 
 import android.content.Context;
 
-import black.android.net.BRIConnectivityManagerStub;
-import black.android.os.BRServiceManager;
+import top.niunaijun.blackbox.reflect.android.net.BRIConnectivityManager;
+import top.niunaijun.blackbox.reflect.android.os.BRServiceManager;
 import top.niunaijun.blackbox.fake.hook.BinderInvocationStub;
 import top.niunaijun.blackbox.fake.hook.ScanClass;
 
@@ -20,12 +20,12 @@ public class IConnectivityManagerProxy extends BinderInvocationStub {
     public static final String TAG = "IConnectivityManagerProxy";
 
     public IConnectivityManagerProxy() {
-        super(BRServiceManager.get().getService(Context.CONNECTIVITY_SERVICE));
+        super(BRServiceManager.getService.call(Context.CONNECTIVITY_SERVICE));
     }
 
     @Override
     protected Object getWho() {
-        return BRIConnectivityManagerStub.get().asInterface(BRServiceManager.get().getService(Context.CONNECTIVITY_SERVICE));
+        return BRIConnectivityManager.Stub.asInterface.call(BRServiceManager.getService.call(Context.CONNECTIVITY_SERVICE));
     }
 
     @Override

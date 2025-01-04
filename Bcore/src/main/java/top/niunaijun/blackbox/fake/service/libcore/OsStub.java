@@ -4,7 +4,7 @@ import android.os.Process;
 
 import java.lang.reflect.Method;
 
-import black.libcore.io.BRLibcore;
+import top.niunaijun.blackbox.reflect.libcore.io.BRLibcore;
 import top.niunaijun.blackbox.BlackBoxCore;
 import top.niunaijun.blackbox.app.BActivityThread;
 import top.niunaijun.blackbox.core.IOCore;
@@ -26,7 +26,7 @@ public class OsStub extends ClassInvocationStub {
     private Object mBase;
 
     public OsStub() {
-        mBase = BRLibcore.get().os();
+        mBase = BRLibcore.os.get();
     }
 
     @Override
@@ -36,7 +36,7 @@ public class OsStub extends ClassInvocationStub {
 
     @Override
     protected void inject(Object baseInvocation, Object proxyInvocation) {
-        BRLibcore.get()._set_os(proxyInvocation);
+        BRLibcore.os.set(proxyInvocation);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class OsStub extends ClassInvocationStub {
 
     @Override
     public boolean isBadEnv() {
-        return BRLibcore.get().os() != getProxyInvocation();
+        return BRLibcore.os.get() != getProxyInvocation();
     }
 
     @Override

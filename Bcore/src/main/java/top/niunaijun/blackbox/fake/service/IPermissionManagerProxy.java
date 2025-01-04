@@ -2,15 +2,15 @@ package top.niunaijun.blackbox.fake.service;
 
 import android.content.pm.PackageManager;
 
-import black.android.app.BRActivityThread;
-import black.android.app.BRContextImpl;
-import black.android.os.BRServiceManager;
-import black.android.permission.BRIPermissionManagerStub;
+import top.niunaijun.blackbox.reflect.android.app.BRActivityThread;
+import top.niunaijun.blackbox.reflect.android.app.BRApplicationPackageManager;
+import top.niunaijun.blackbox.reflect.android.app.BRContextImpl;
+import top.niunaijun.blackbox.reflect.android.os.BRServiceManager;
+import top.niunaijun.blackbox.reflect.android.permission.BRIPermissionManager;
 import top.niunaijun.blackbox.BlackBoxCore;
 import top.niunaijun.blackbox.fake.hook.BinderInvocationStub;
 import top.niunaijun.blackbox.fake.service.base.PkgMethodProxy;
 import top.niunaijun.blackbox.fake.service.base.ValueMethodProxy;
-import top.niunaijun.blackbox.utils.Reflector;
 import top.niunaijun.blackbox.utils.compat.BuildCompat;
 
 /**
@@ -22,29 +22,29 @@ public class IPermissionManagerProxy extends BinderInvocationStub {
     private static final String P = "permissionmgr";
 
     public IPermissionManagerProxy() {
-        super(BRServiceManager.get().getService(P));
+        super(BRServiceManager.getService.call(P));
     }
 
     @Override
     protected Object getWho() {
-        return BRIPermissionManagerStub.get().asInterface(BRServiceManager.get().getService(P));
+        return BRIPermissionManager.Stub.asInterface.call(BRServiceManager.getService.call(P));
     }
 
     @Override
     protected void inject(Object baseInvocation, Object proxyInvocation) {
         replaceSystemService("permissionmgr");
-        BRActivityThread.getWithException()._set_sPermissionManager(proxyInvocation);
-        Object systemContext = BRActivityThread.get(BlackBoxCore.mainThread()).getSystemContext();
-        PackageManager packageManager = BRContextImpl.get(systemContext).mPackageManager();
+        BRActivityThread.sPermissionManager.set(proxyInvocation);
+
+        Object systemContext = BRActivityThread.getSystemContext.call(BlackBoxCore.mainThread());
+        PackageManager packageManager = BRContextImpl.mPackageManager.get(systemContext);
         if (packageManager != null) {
             try {
-                Reflector.on("android.app.ApplicationPackageManager")
-                        .field("mPermissionManager")
-                        .set(packageManager, proxyInvocation);
+                BRApplicationPackageManager.mPermissionManager.set(packageManager, proxyInvocation);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+
     }
 
     @Override

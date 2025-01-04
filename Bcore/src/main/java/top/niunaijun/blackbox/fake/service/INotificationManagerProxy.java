@@ -11,8 +11,8 @@ import androidx.annotation.RequiresApi;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import black.android.app.BRNotificationManager;
-import black.android.content.pm.BRParceledListSlice;
+import top.niunaijun.blackbox.reflect.android.app.BRNotificationManager;
+import top.niunaijun.blackbox.reflect.android.content.pm.BRParceledListSlice;
 import top.niunaijun.blackbox.app.BActivityThread;
 import top.niunaijun.blackbox.fake.frameworks.BNotificationManager;
 import top.niunaijun.blackbox.fake.hook.BinderInvocationStub;
@@ -34,17 +34,17 @@ public class INotificationManagerProxy extends BinderInvocationStub {
     public static final String TAG = "INotificationManagerProxy";
 
     public INotificationManagerProxy() {
-        super(BRNotificationManager.get().getService().asBinder());
+        super(BRNotificationManager.getService.call().asBinder());
     }
 
     @Override
     protected Object getWho() {
-        return BRNotificationManager.get().getService();
+        return BRNotificationManager.getService.call();
     }
 
     @Override
     protected void inject(Object baseInvocation, Object proxyInvocation) {
-        BRNotificationManager.get()._set_sService(getProxyInvocation());
+        BRNotificationManager.sService.set(getProxyInvocation());
         replaceSystemService(Context.NOTIFICATION_SERVICE);
     }
 
@@ -131,7 +131,7 @@ public class INotificationManagerProxy extends BinderInvocationStub {
 
         @Override
         protected Object hook(Object who, Method method, Object[] args) throws Throwable {
-            List<?> list = BRParceledListSlice.get(args[1]).getList();
+            List<?> list = BRParceledListSlice.getList.call(args[1]);
             if (list == null)
                 return 0;
             for (Object o : list) {
@@ -157,7 +157,7 @@ public class INotificationManagerProxy extends BinderInvocationStub {
 
         @Override
         protected Object hook(Object who, Method method, Object[] args) throws Throwable {
-            List<?> list = BRParceledListSlice.get(args[1]).getList();
+            List<?> list = BRParceledListSlice.getList.call(args[1]);
             for (Object o : list) {
                 BNotificationManager.get().createNotificationChannelGroup((NotificationChannelGroup) o);
             }

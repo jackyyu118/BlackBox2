@@ -4,8 +4,8 @@ import android.content.Context;
 
 import java.lang.reflect.Method;
 
-import black.android.media.BRIMediaRouterServiceStub;
-import black.android.os.BRServiceManager;
+import top.niunaijun.blackbox.reflect.android.media.BRIMediaRouterService;
+import top.niunaijun.blackbox.reflect.android.os.BRServiceManager;
 import top.niunaijun.blackbox.fake.hook.BinderInvocationStub;
 import top.niunaijun.blackbox.fake.hook.MethodHook;
 import top.niunaijun.blackbox.fake.hook.ProxyMethod;
@@ -17,12 +17,12 @@ import top.niunaijun.blackbox.utils.MethodParameterUtils;
 public class IMediaRouterServiceProxy extends BinderInvocationStub {
 
     public IMediaRouterServiceProxy() {
-        super(BRServiceManager.get().getService(Context.MEDIA_ROUTER_SERVICE));
+        super(BRServiceManager.getService.call(Context.MEDIA_ROUTER_SERVICE));
     }
 
     @Override
     protected Object getWho() {
-        return BRIMediaRouterServiceStub.get().asInterface(BRServiceManager.get().getService(Context.MEDIA_ROUTER_SERVICE));
+        return BRIMediaRouterService.Stub.asInterface.call(BRServiceManager.getService.call(Context.MEDIA_ROUTER_SERVICE));
     }
 
     @Override

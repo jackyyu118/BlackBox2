@@ -6,8 +6,8 @@ import android.os.Build;
 
 import java.lang.reflect.Method;
 
-import black.android.app.usage.BRIStorageStatsManagerStub;
-import black.android.os.BRServiceManager;
+import top.niunaijun.blackbox.reflect.android.app.usage.BRIStorageStatsManager;
+import top.niunaijun.blackbox.reflect.android.os.BRServiceManager;
 import top.niunaijun.blackbox.fake.hook.BinderInvocationStub;
 import top.niunaijun.blackbox.utils.MethodParameterUtils;
 
@@ -18,12 +18,12 @@ import top.niunaijun.blackbox.utils.MethodParameterUtils;
 public class IStorageStatsManagerProxy extends BinderInvocationStub {
 
     public IStorageStatsManagerProxy() {
-        super(BRServiceManager.get().getService(Context.STORAGE_STATS_SERVICE));
+        super(BRServiceManager.getService.call(Context.STORAGE_STATS_SERVICE));
     }
 
     @Override
     protected Object getWho() {
-        return BRIStorageStatsManagerStub.get().asInterface(BRServiceManager.get().getService(Context.STORAGE_STATS_SERVICE));
+        return BRIStorageStatsManager.Stub.asInterface.call(BRServiceManager.getService.call(Context.STORAGE_STATS_SERVICE));
     }
 
     @Override

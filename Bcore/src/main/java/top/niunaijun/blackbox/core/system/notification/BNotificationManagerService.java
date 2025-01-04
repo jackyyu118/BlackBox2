@@ -16,12 +16,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import black.android.app.BRNotificationChannel;
-import black.android.app.BRNotificationChannelGroup;
-import black.android.app.BRNotificationO;
-import black.android.app.NotificationChannelContext;
-import black.android.app.NotificationChannelGroupContext;
-import black.android.app.NotificationOContext;
+import top.niunaijun.blackbox.reflect.android.app.BRNotificationChannel;
+import top.niunaijun.blackbox.reflect.android.app.BRNotificationChannelGroup;
+import top.niunaijun.blackbox.reflect.android.app.BRNotificationO;
 import top.niunaijun.blackbox.BlackBoxCore;
 import top.niunaijun.blackbox.core.system.BProcessManagerService;
 import top.niunaijun.blackbox.core.system.ISystemService;
@@ -171,23 +168,23 @@ public class BNotificationManagerService extends IBNotificationManagerService.St
     @Override
     public void enqueueNotificationWithTag(int id, String tag, Notification notification, int userId) {
         ProcessRecord processByPid = BProcessManagerService.get().findProcessByPid(Binder.getCallingPid());
-        if (processByPid == null)
+        if (processByPid == null) {
             return;
-        int notificationId = getNotificationId(userId, id, processByPid.getPackageName());
+        }
 
+        int notificationId = getNotificationId(userId, id, processByPid.getPackageName());
         if (BuildCompat.isOreo()) {
-            NotificationOContext notificationOContext = BRNotificationO.get(notification);
-            // channel
-            if (notificationOContext._check_mChannelId() != null) {
-                String blackChannelId = getBlackChannelId(notificationOContext.mChannelId(), userId);
-                notificationOContext._set_mChannelId(blackChannelId);
+            if (BRNotificationO.mChannelId != null) {
+                String blackChannelId = getBlackChannelId(BRNotificationO.mChannelId.get(), userId);
+                BRNotificationO.mChannelId.set(blackChannelId);
             }
-            // group
-            if (notificationOContext._check_mGroupKey() != null) {
-                String blackGroupId = getBlackGroupId(notificationOContext.mGroupKey(), userId);
-                notificationOContext._set_mGroupKey(blackGroupId);
+
+            if (BRNotificationO.mGroupKey != null) {
+                String blackGroupId = getBlackGroupId(BRNotificationO.mGroupKey.get(), userId);
+                BRNotificationO.mGroupKey.set(blackGroupId);
             }
         }
+
         NotificationRecord notificationRecord = getNotificationRecord(processByPid.getPackageName(), userId);
         synchronized (notificationRecord.mIds) {
             notificationRecord.mIds.add(notificationId);
@@ -211,42 +208,37 @@ public class BNotificationManagerService extends IBNotificationManagerService.St
 
     @TargetApi(Build.VERSION_CODES.O)
     private void handleNotificationChannel(NotificationChannel notificationChannel, int userId) {
-        NotificationChannelContext channelContext = BRNotificationChannel.get(notificationChannel);
-        String channelId = channelContext.mId();
+        String channelId = BRNotificationChannel.mId.get(notificationChannel);
         String blackChannelId = getBlackChannelId(channelId, userId);
-        channelContext._set_mId(blackChannelId);
 
+        BRNotificationChannel.mId.set(notificationChannel, blackChannelId);
         notificationChannel.setGroup(getBlackGroupId(notificationChannel.getGroup(), userId));
     }
 
     private void resetNotificationChannel(NotificationChannel notificationChannel) {
-        NotificationChannelContext channelContext = BRNotificationChannel.get(notificationChannel);
-        String channelId = channelContext.mId();
+        String channelId = BRNotificationChannel.mId.get(notificationChannel);
         String realChannelId = getRealChannelId(channelId);
-        channelContext._set_mId(realChannelId);
+        BRNotificationChannel.mId.set(notificationChannel, realChannelId);
     }
 
     private void handleNotificationGroup(NotificationChannelGroup notificationChannelGroup, int userId) {
-        NotificationChannelGroupContext groupContext = BRNotificationChannelGroup.get(notificationChannelGroup);
-        String groupId = groupContext.mId();
+        String groupId = BRNotificationChannelGroup.mId.get(notificationChannelGroup);
         String blackGroupId = getBlackGroupId(groupId, userId);
-        groupContext._set_mId(blackGroupId);
+        BRNotificationChannelGroup.mId.set(notificationChannelGroup, blackGroupId);
 
-        List<NotificationChannel> notificationChannels = groupContext.mChannels();
+        List<NotificationChannel> notificationChannels = BRNotificationChannelGroup.mChannels.get(notificationChannelGroup);
         if (notificationChannels != null) {
             for (NotificationChannel notificationChannel : notificationChannels) {
                 createNotificationChannel(notificationChannel, userId);
             }
         }
     }
-
     private void resetNotificationGroup(NotificationChannelGroup notificationChannelGroup) {
-        NotificationChannelGroupContext groupContext = BRNotificationChannelGroup.get(notificationChannelGroup);
-        String groupId = groupContext.mId();
+        String groupId = BRNotificationChannelGroup.mId.get(notificationChannelGroup);
         String realGroupId = getRealGroupId(groupId);
-        groupContext._set_mId(realGroupId);
+        BRNotificationChannelGroup.mId.set(notificationChannelGroup, realGroupId);
 
-        List<NotificationChannel> notificationChannels = groupContext.mChannels();
+        List<NotificationChannel> notificationChannels = BRNotificationChannelGroup.mChannels.get(notificationChannelGroup);
         if (notificationChannels != null) {
             for (NotificationChannel notificationChannel : notificationChannels) {
                 resetNotificationChannel(notificationChannel);

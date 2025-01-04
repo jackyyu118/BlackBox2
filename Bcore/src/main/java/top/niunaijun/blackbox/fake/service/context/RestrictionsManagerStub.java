@@ -4,8 +4,8 @@ import android.content.Context;
 
 import java.lang.reflect.Method;
 
-import black.android.content.BRIRestrictionsManagerStub;
-import black.android.os.BRServiceManager;
+import top.niunaijun.blackbox.reflect.android.content.BRIRestrictionsManager;
+import top.niunaijun.blackbox.reflect.android.os.BRServiceManager;
 import top.niunaijun.blackbox.BlackBoxCore;
 import top.niunaijun.blackbox.fake.hook.BinderInvocationStub;
 import top.niunaijun.blackbox.fake.hook.MethodHook;
@@ -22,12 +22,12 @@ import top.niunaijun.blackbox.fake.hook.ProxyMethod;
 public class RestrictionsManagerStub extends BinderInvocationStub {
 
     public RestrictionsManagerStub() {
-        super(BRServiceManager.get().getService(Context.RESTRICTIONS_SERVICE));
+        super(BRServiceManager.getService.call(Context.RESTRICTIONS_SERVICE));
     }
 
     @Override
     protected Object getWho() {
-        return BRIRestrictionsManagerStub.get().asInterface(BRServiceManager.get().getService(Context.RESTRICTIONS_SERVICE));
+        return BRIRestrictionsManager.Stub.asInterface.call(BRServiceManager.getService.call(Context.RESTRICTIONS_SERVICE));
     }
 
     @Override

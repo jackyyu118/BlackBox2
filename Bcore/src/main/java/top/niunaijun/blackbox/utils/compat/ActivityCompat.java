@@ -14,9 +14,10 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.view.WindowManager;
 
-import black.android.app.BRActivity;
-import black.com.android.internal.BRRstyleable;
+import top.niunaijun.blackbox.reflect.android.app.BRActivity;
+import top.niunaijun.blackbox.reflect.com.android.internal.BRR;
 import top.niunaijun.blackbox.app.BActivityThread;
+import top.niunaijun.blackbox.utils.ArrayUtils;
 import top.niunaijun.blackbox.utils.DrawableUtils;
 
 /**
@@ -30,20 +31,17 @@ import top.niunaijun.blackbox.utils.DrawableUtils;
 public class ActivityCompat {
 
     public static void fix(Activity activity) {
-        // mContentResolver
-        BRActivity.get(activity).mActivityInfo();
-
         Context baseContext = activity.getBaseContext();
         try {
-            TypedArray typedArray = activity.obtainStyledAttributes((BRRstyleable.get().Window()));
+            TypedArray typedArray = activity.obtainStyledAttributes(ArrayUtils.toInt(BRR.styleable.Window.get()));
             if (typedArray != null) {
-                boolean showWallpaper = typedArray.getBoolean(BRRstyleable.get().Window_windowShowWallpaper(),
-                        false);
-                if (showWallpaper) {
+                boolean isShowWallpaper = typedArray.getBoolean(BRR.styleable.Window_windowShowWallpaper.get(), false);
+                if (isShowWallpaper) {
                     activity.getWindow().setBackgroundDrawable(WallpaperManager.getInstance(activity).getDrawable());
                 }
-                boolean fullscreen = typedArray.getBoolean(BRRstyleable.get().Window_windowFullscreen(), false);
-                if (fullscreen) {
+
+                boolean isFullscreen = typedArray.getBoolean(BRR.styleable.Window_windowFullscreen.get(), false);
+                if (isFullscreen) {
                     activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
                 }
                 typedArray.recycle();

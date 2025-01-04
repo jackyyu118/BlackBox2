@@ -3,15 +3,14 @@ package top.niunaijun.blackbox.utils.compat;
 import android.os.IBinder;
 import android.os.IInterface;
 
-import black.android.app.BRApplicationThreadNative;
-import black.android.app.BRIApplicationThreadOreoStub;
+import top.niunaijun.blackbox.reflect.android.app.BRApplicationThreadNative;
+import top.niunaijun.blackbox.reflect.android.app.BRIApplicationThread;
 
 public class ApplicationThreadCompat {
-
     public static IInterface asInterface(IBinder binder) {
         if (BuildCompat.isOreo()) {
-            return BRIApplicationThreadOreoStub.get().asInterface(binder);
+            return BRIApplicationThread.Stub.asInterface.call(binder);
         }
-        return BRApplicationThreadNative.get().asInterface(binder);
+        return BRApplicationThreadNative.asInterface.call(binder);
     }
 }

@@ -10,7 +10,6 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/Bcore" />
-            <option value="$PROJECT_DIR$/Bcore/android-mirror" />
             <option value="$PROJECT_DIR$/Bcore/black-fake" />
             <option value="$PROJECT_DIR$/Bcore/black-hook" />
             <option value="$PROJECT_DIR$/app" />

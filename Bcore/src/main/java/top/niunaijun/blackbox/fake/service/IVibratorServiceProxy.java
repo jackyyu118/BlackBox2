@@ -5,9 +5,9 @@ import android.os.IBinder;
 
 import java.lang.reflect.Method;
 
-import black.android.os.BRIVibratorManagerServiceStub;
-import black.android.os.BRServiceManager;
-import black.com.android.internal.os.BRIVibratorServiceStub;
+import top.niunaijun.blackbox.reflect.android.os.BRIVibratorManagerService;
+import top.niunaijun.blackbox.reflect.android.os.BRServiceManager;
+import top.niunaijun.blackbox.reflect.com.android.internal.os.BRIVibratorService;
 import top.niunaijun.blackbox.fake.hook.BinderInvocationStub;
 import top.niunaijun.blackbox.utils.MethodParameterUtils;
 import top.niunaijun.blackbox.utils.compat.BuildCompat;
@@ -26,16 +26,16 @@ public class IVibratorServiceProxy extends BinderInvocationStub {
     }
 
     public IVibratorServiceProxy() {
-        super(BRServiceManager.get().getService(NAME));
+        super(BRServiceManager.getService.call(NAME));
     }
 
     @Override
     protected Object getWho() {
-        IBinder service = BRServiceManager.get().getService(NAME);
+        IBinder service = BRServiceManager.getService.call(NAME);
         if (BuildCompat.isS()) {
-            return BRIVibratorManagerServiceStub.get().asInterface(service);
+            return BRIVibratorManagerService.Stub.asInterface.call(service);
         }
-        return BRIVibratorServiceStub.get().asInterface(service);
+        return BRIVibratorService.Stub.asInterface.call(service);
     }
 
     @Override

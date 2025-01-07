@@ -245,7 +245,7 @@ void JniHook::InitJniHook(JNIEnv *env, int api_level) {
     if (api_level >= __ANDROID_API_Q__) {//android 10
         flags = flags | kAccPublicApi;
     }
-    if (api_level >= __ANDROID_API_U__) {//android 14
+    if (api_level >= __ANDROID_API_S__) {//android 12
         flags = flags | kAccNterpInvokeFastPathFlag;
     }
 

@@ -11,11 +11,13 @@ import top.niunaijun.blackbox.fake.frameworks.BActivityManager;
 import top.niunaijun.blackbox.fake.hook.ClassInvocationStub;
 import top.niunaijun.blackbox.fake.hook.MethodHook;
 import top.niunaijun.blackbox.fake.hook.ProxyMethod;
+import top.niunaijun.blackbox.fake.hook.ScanClass;
 import top.niunaijun.blackbox.utils.compat.TaskDescriptionCompat;
 
 /**
  * Created by BlackBox on 2022/2/22.
  */
+@ScanClass(ActivityManagerCommonProxy.class)
 public class IActivityClientProxy extends ClassInvocationStub {
     public static final String TAG = "IActivityClientProxy";
     private final Object who;

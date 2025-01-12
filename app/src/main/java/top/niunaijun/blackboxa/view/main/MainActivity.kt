@@ -37,11 +37,16 @@ class MainActivity : LoadingActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        BlackBoxCore.get().onBeforeMainActivityOnCreate(this);
+
         setContentView(viewBinding.root)
         initToolbar(viewBinding.toolbarLayout.toolbar, R.string.app_name)
         initViewPager()
         initFab()
         initToolbarSubTitle()
+
+        BlackBoxCore.get().onAfterMainActivityOnCreate(this);
     }
 
     private fun initToolbarSubTitle() {

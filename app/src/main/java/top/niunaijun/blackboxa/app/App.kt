@@ -3,6 +3,7 @@ package top.niunaijun.blackboxa.app
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
+import top.niunaijun.blackbox.BlackBoxCore
 
 /**
  *
@@ -26,9 +27,15 @@ class App : Application() {
 
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
+
+        BlackBoxCore.get().closeCodeInit();
+
+        BlackBoxCore.get().onBeforeMainApplicationAttach(this,base);
+
         mContext = base!!
         AppManager.doAttachBaseContext(base)
 
+        BlackBoxCore.get().onAfterMainApplicationAttach(this,base);
     }
 
     override fun onCreate() {

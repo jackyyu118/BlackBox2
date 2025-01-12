@@ -73,6 +73,8 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar", "*.aar"])
     implementation 'androidx.appcompat:appcompat:1.2.0'
 
+    implementation 'com.moandjiezana.toml:toml4j:0.7.2'
+
     implementation 'com.github.tiann:FreeReflection:3.2.2'
     implementation "com.github.CodingGay.BlackReflection:core:$rootProject.ext.blackReflection"
     implementation project(':Bcore:black-fake')

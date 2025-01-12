@@ -2,6 +2,7 @@ package top.niunaijun.blackbox;
 
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
+import android.app.Application;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -21,15 +22,18 @@ import android.os.Looper;
 import android.os.Process;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import black.android.app.Activity;
 import black.android.app.BRActivityThread;
 import black.android.os.BRUserHandle;
 import me.weishu.reflection.Reflection;
 import top.canyie.pine.PineConfig;
+import top.niunaijun.blackbox.app.BActivityThread;
 import top.niunaijun.blackbox.app.LauncherActivity;
 import top.niunaijun.blackbox.app.configuration.AppLifecycleCallback;
 import top.niunaijun.blackbox.app.configuration.ClientConfiguration;
@@ -203,6 +207,8 @@ public class BlackBoxCore extends ClientConfiguration {
     }
 
     public boolean launchApk(String packageName, int userId) {
+        onBeforeMainLaunchApk(packageName,userId);
+
         Intent launchIntentForPackage = getBPackageManager().getLaunchIntentForPackage(packageName, userId);
         if (launchIntentForPackage == null) {
             return false;
@@ -460,6 +466,41 @@ public class BlackBoxCore extends ClientConfiguration {
             notificationChannel.setShowBadge(true);
             notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
             nm.createNotificationChannel(notificationChannel);
+        }
+    }
+
+    public void closeCodeInit(){
+        //用于做一些不开源的定制化项目功能，在Entry::attach里面设置AppLifecycleCallback回调函数，满足定制化需求
+        try {
+            Class entry = Class.forName("top.niunaijun.blackbox.closecode.Entry");
+            Method attach = entry.getDeclaredMethod("attach");
+            attach.invoke(null);
+        } catch (Exception e) {
+        }
+    }
+    public void onBeforeMainLaunchApk(String packageName,int userid) {
+        for (AppLifecycleCallback appLifecycleCallback : BlackBoxCore.get().getAppLifecycleCallbacks()) {
+            appLifecycleCallback.beforeMainLaunchApk(packageName,userid);
+        }
+    }
+    public void onBeforeMainApplicationAttach(Application app, Context context) {
+        for (AppLifecycleCallback appLifecycleCallback : BlackBoxCore.get().getAppLifecycleCallbacks()) {
+            appLifecycleCallback.beforeMainApplicationAttach(app, context);
+        }
+    }
+    public void onAfterMainApplicationAttach(Application app, Context context) {
+        for (AppLifecycleCallback appLifecycleCallback : BlackBoxCore.get().getAppLifecycleCallbacks()) {
+            appLifecycleCallback.afterMainApplicationAttach(app, context);
+        }
+    }
+    public void onBeforeMainActivityOnCreate(android.app.Activity activity) {
+        for (AppLifecycleCallback appLifecycleCallback : BlackBoxCore.get().getAppLifecycleCallbacks()) {
+            appLifecycleCallback.beforeMainActivityOnCreate(activity);
+        }
+    }
+    public void onAfterMainActivityOnCreate(android.app.Activity activity) {
+        for (AppLifecycleCallback appLifecycleCallback : BlackBoxCore.get().getAppLifecycleCallbacks()) {
+            appLifecycleCallback.afterMainActivityOnCreate(activity);
         }
     }
 }

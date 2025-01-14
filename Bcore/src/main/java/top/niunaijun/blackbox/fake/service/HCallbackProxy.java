@@ -7,6 +7,7 @@ import android.content.pm.ServiceInfo;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -173,7 +174,11 @@ public class HCallbackProxy implements IInjectHook, Handler.Callback {
             int taskId = BRIActivityManager.get(BRActivityManagerNative.get().getDefault()).getTaskForActivity(token, false);
             BlackBoxCore.getBActivityManager().onActivityCreated(taskId, token, stubRecord.mActivityRecord);
 
-            if (BuildCompat.isS()) {
+            if(BuildCompat.isTiramisu()){//处理跟isPie一样流程
+                LaunchActivityItemContext launchActivityItemContext = BRLaunchActivityItem.get(r);
+                launchActivityItemContext._set_mIntent(stubRecord.mTarget);
+                launchActivityItemContext._set_mInfo(activityInfo);
+            } else if (BuildCompat.isS()) {
                 Object record = BRActivityThread.get(BlackBoxCore.mainThread()).getLaunchingActivity(token);
                 ActivityThreadActivityClientRecordContext clientRecordContext = BRActivityThreadActivityClientRecord.get(record);
                 clientRecordContext._set_intent(stubRecord.mTarget);

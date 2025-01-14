@@ -44,6 +44,7 @@ public class CopyExecutor implements Executor {
                 } else {
                     FileUtils.copyFile(origFile, newFile);
                 }
+                newFile.setReadOnly();
                 // update baseCodePath
                 ps.pkg.baseCodePath = newFile.getAbsolutePath();
             } catch (IOException e) {

@@ -10,6 +10,7 @@
 #include <Hook/VMClassLoaderHook.h>
 #include <Hook/UnixFileSystemHook.h>
 #include <Hook/BinderHook.h>
+#include <Hook/DexFileHook.h>
 #include <Hook/RuntimeHook.h>
 #include "Utils/HexDump.h"
 #include "hidden_api.h"
@@ -74,6 +75,7 @@ void nativeHook(JNIEnv *env) {
     VMClassLoaderHook::init(env);
 //    RuntimeHook::init(env);
     BinderHook::init(env);
+    DexFileHook::init(env);
 }
 
 void hideXposed(JNIEnv *env, jclass clazz) {

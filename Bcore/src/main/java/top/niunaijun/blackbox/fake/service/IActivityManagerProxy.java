@@ -53,6 +53,8 @@ import top.niunaijun.blackbox.utils.compat.BuildCompat;
 import top.niunaijun.blackbox.utils.compat.ParceledListSliceCompat;
 import top.niunaijun.blackbox.utils.compat.TaskDescriptionCompat;
 
+import static android.content.Context.RECEIVER_EXPORTED;
+import static android.content.Context.RECEIVER_NOT_EXPORTED;
 import static android.content.pm.PackageManager.GET_META_DATA;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
@@ -489,14 +491,9 @@ public class IActivityManagerProxy extends ClassInvocationStub {
         }
     }
 
-    // android 10
+    // android 11 add
     @ProxyMethod("registerReceiverWithFeature")
-    public static class RegisterReceiverWithFeature extends RegisterReceiver {
-    }
-
-    @ProxyMethod("registerReceiver")
-    public static class RegisterReceiver extends MethodHook {
-
+    public static class RegisterReceiverWithFeature extends MethodHook{
         @Override
         protected Object hook(Object who, Method method, Object[] args) throws Throwable {
             MethodParameterUtils.replaceFirstAppPkg(args);
@@ -516,25 +513,59 @@ public class IActivityManagerProxy extends ClassInvocationStub {
             if (args[getPermissionIndex()] != null) {
                 args[getPermissionIndex()] = null;
             }
+
+            if (BuildCompat.isU()) {
+                int flagsIndex = args.length - 1;
+                int flags = (int)args[flagsIndex];
+                if((flags & RECEIVER_NOT_EXPORTED) == 0 && (flags & RECEIVER_EXPORTED) == 0){
+                    flags |= RECEIVER_NOT_EXPORTED;
+                }
+                args[flagsIndex] = flags;
+            }
+
             return method.invoke(who, args);
         }
 
         public int getReceiverIndex() {
             if (BuildCompat.isS()) {
                 return 4;
-            } else if (BuildCompat.isR()) {
-                return 3;
             }
-            return 2;
+            return 3;
         }
 
         public int getPermissionIndex() {
             if (BuildCompat.isS()) {
                 return 6;
-            } else if (BuildCompat.isR()) {
-                return 5;
             }
-            return 4;
+            return 5;
+        }
+    }
+
+    //maxTargetSdk=29
+    @ProxyMethod("registerReceiver")
+    public static class RegisterReceiver extends MethodHook {
+
+        @Override
+        protected Object hook(Object who, Method method, Object[] args) throws Throwable {
+            MethodParameterUtils.replaceFirstAppPkg(args);
+            int receiverIndex = 2;
+            if (args[receiverIndex] != null) {
+                IIntentReceiver intentReceiver = (IIntentReceiver) args[receiverIndex];
+                IIntentReceiver proxy = InnerReceiverDelegate.createProxy(intentReceiver);
+
+                WeakReference<?> weakReference = BRLoadedApkReceiverDispatcherInnerReceiver.get(intentReceiver).mDispatcher();
+                if (weakReference != null) {
+                    BRLoadedApkReceiverDispatcher.get(weakReference.get())._set_mIIntentReceiver(proxy);
+                }
+
+                args[receiverIndex] = proxy;
+            }
+            int permissionIndex = 4;
+            // ignore permission
+            if (args[permissionIndex] != null) {
+                args[permissionIndex] = null;
+            }
+            return method.invoke(who, args);
         }
     }
 

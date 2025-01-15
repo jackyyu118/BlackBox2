@@ -24,7 +24,8 @@ add_library( # Sets the name of the library.
         # Provides a relative path to your source file(s).
         BoxCore.cpp
         hidden_api.cpp
-        Utils/elf_util.cpp
+        Utils/elf_util.cpp #不知道为啥aux_source_directory没有效果
+        Hook/DexFileHook.cpp
         ${SRC1}
         ${SRC2}
         ${SRC3}

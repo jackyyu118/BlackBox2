@@ -63,8 +63,8 @@ public class NativeCore {
 
         if (origCallingUid == BlackBoxCore.getHostUid()) {
 //            Log.d(TAG, "origCallingUid: " + origCallingUid + " => " + BActivityThread.getCallingBUid());
-//            return BActivityThread.getCallingBUid();
-            return BActivityThread.getBUid();
+            return BActivityThread.getCallingBUid();
+//            return BActivityThread.getBUid();
         }
         return origCallingUid;
     }

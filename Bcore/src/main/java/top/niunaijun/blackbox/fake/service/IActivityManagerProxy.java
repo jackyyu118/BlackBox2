@@ -235,41 +235,63 @@ public class IActivityManagerProxy extends ClassInvocationStub {
         }
     }
 
+    public static Object BindServiceCommon(Object who, Method method, Object[] args,int callingPackageIndex) throws Throwable {
+        Intent intent = (Intent) args[2];
+        String resolvedType = (String) args[3];
+        IServiceConnection connection = (IServiceConnection) args[4];
+
+        //int flags = MethodParameterUtils.toInt(args[5]);
+
+        int userId = intent.getIntExtra("_B_|_UserId", -1);
+        userId = userId == -1 ? BActivityThread.getUserId() : userId;
+        ResolveInfo resolveInfo = BlackBoxCore.getBPackageManager().resolveService(intent, 0, resolvedType, userId);
+        if (resolveInfo != null || AppSystemEnv.isOpenPackage(intent.getComponent())) {
+            Intent proxyIntent = BlackBoxCore.getBActivityManager().bindService(intent,
+                    connection == null ? null : connection.asBinder(),
+                    resolvedType,
+                    userId);
+            if (connection != null) {
+                if (intent.getComponent() == null && resolveInfo != null) {
+                    intent.setComponent(new ComponentName(resolveInfo.serviceInfo.packageName, resolveInfo.serviceInfo.name));
+                }
+                IServiceConnection proxy = ServiceConnectionDelegate.createProxy(connection, intent);
+                args[4] = proxy;
+
+                WeakReference<?> weakReference = BRLoadedApkServiceDispatcherInnerConnection.get(connection).mDispatcher();
+                if (weakReference != null) {
+                    BRLoadedApkServiceDispatcher.get(weakReference.get())._set_mConnection(proxy);
+                }
+            }
+
+            args[callingPackageIndex] = BlackBoxCore.getHostPkg();
+
+            if (proxyIntent != null) {
+                args[2] = proxyIntent;
+                return method.invoke(who, args);
+            }
+        }
+        return method.invoke(who, args);
+    }
     @ProxyMethod("bindService")
     public static class BindService extends MethodHook {
 
         @Override
         protected Object hook(Object who, Method method, Object[] args) throws Throwable {
-            Intent intent = (Intent) args[2];
-            String resolvedType = (String) args[3];
-            IServiceConnection connection = (IServiceConnection) args[4];
+            return BindServiceCommon(who,method,args,6);
+        }
 
-            int userId = intent.getIntExtra("_B_|_UserId", -1);
-            userId = userId == -1 ? BActivityThread.getUserId() : userId;
-            ResolveInfo resolveInfo = BlackBoxCore.getBPackageManager().resolveService(intent, 0, resolvedType, userId);
-            if (resolveInfo != null || AppSystemEnv.isOpenPackage(intent.getComponent())) {
-                Intent proxyIntent = BlackBoxCore.getBActivityManager().bindService(intent,
-                        connection == null ? null : connection.asBinder(),
-                        resolvedType,
-                        userId);
-                if (connection != null) {
-                    if (intent.getComponent() == null && resolveInfo != null) {
-                        intent.setComponent(new ComponentName(resolveInfo.serviceInfo.packageName, resolveInfo.serviceInfo.name));
-                    }
-                    IServiceConnection proxy = ServiceConnectionDelegate.createProxy(connection, intent);
-                    args[4] = proxy;
+        @Override
+        protected boolean isEnable() {
+            return BlackBoxCore.get().isBlackProcess() || BlackBoxCore.get().isServerProcess();
+        }
+    }
 
-                    WeakReference<?> weakReference = BRLoadedApkServiceDispatcherInnerConnection.get(connection).mDispatcher();
-                    if (weakReference != null) {
-                        BRLoadedApkServiceDispatcher.get(weakReference.get())._set_mConnection(proxy);
-                    }
-                }
-                if (proxyIntent != null) {
-                    args[2] = proxyIntent;
-                    return method.invoke(who, args);
-                }
-            }
-            return 0;
+    // android 14 add
+    @ProxyMethod("bindServiceInstance")
+    public static class bindServiceInstance extends MethodHook {
+        @Override
+        protected Object hook(Object who, Method method, Object[] args) throws Throwable {
+            return BindServiceCommon(who,method,args,7);
         }
 
         @Override
@@ -280,12 +302,17 @@ public class IActivityManagerProxy extends ClassInvocationStub {
 
     // 10.0
     @ProxyMethod("bindIsolatedService")
-    public static class BindIsolatedService extends BindService {
+    public static class BindIsolatedService extends MethodHook {
         @Override
-        protected Object beforeHook(Object who, Method method, Object[] args) throws Throwable {
+        protected Object hook(Object who, Method method, Object[] args) throws Throwable {
             // instanceName
             args[6] = null;
-            return super.beforeHook(who, method, args);
+            return BindServiceCommon(who,method,args,7);
+        }
+
+        @Override
+        protected boolean isEnable() {
+            return BlackBoxCore.get().isBlackProcess() || BlackBoxCore.get().isServerProcess();
         }
     }
 

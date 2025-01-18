@@ -144,5 +144,10 @@ public class MethodParameterUtils {
         }
     }
 
-
+    public static int toInt(Object obj){
+        if(obj instanceof Long){
+            return ((Long) obj).intValue();
+        }
+        return (int)obj;
+    }
 }

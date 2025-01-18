@@ -63,6 +63,9 @@ public class NativeCore {
 
         if (origCallingUid == BlackBoxCore.getHostUid()) {
 //            Log.d(TAG, "origCallingUid: " + origCallingUid + " => " + BActivityThread.getCallingBUid());
+            if(BActivityThread.getAppPackageName().equals("com.google.android.gms")){
+                return Process.ROOT_UID;
+            }
             return BActivityThread.getCallingBUid();
 //            return BActivityThread.getBUid();
         }

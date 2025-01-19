@@ -14,3 +14,5 @@
 .cxx
 local.properties
 /app/release/
+/Bcore/src/main/java/top/niunaijun/blackbox/closecode/
+/Bcore/src/main/cpp/closecode/

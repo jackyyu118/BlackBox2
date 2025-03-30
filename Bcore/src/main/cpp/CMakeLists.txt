@@ -56,6 +56,3 @@ target_link_libraries( # Specifies the target library.
         ${log-lib}
         z
         )
-
-#add closecode so
-add_subdirectory(closecode)

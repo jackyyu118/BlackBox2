@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.ActivityManager;
 import android.app.IServiceConnection;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.IIntentReceiver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -16,6 +17,7 @@ import android.util.Log;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import black.android.app.BRActivityManagerNative;
 import black.android.app.BRActivityManagerOreo;
@@ -263,6 +265,12 @@ public class IActivityManagerProxy extends ClassInvocationStub {
                 }
             }
 
+            //Log.d(TAG,"Intent:" + intent + "-->" + "proxyIntent:" + proxyIntent + ",flag:" + intent.getFlags() + "proxyFlag:" + proxyIntent.getFlags());
+            if(Objects.requireNonNull(proxyIntent.getComponent()).getPackageName().equals(BlackBoxCore.getHostPkg())){
+                int flags = (int) args[5];
+                flags &= ~Context.BIND_EXTERNAL_SERVICE;
+                args[5] = flags;
+            }
             args[callingPackageIndex] = BlackBoxCore.getHostPkg();
 
             if (proxyIntent != null) {

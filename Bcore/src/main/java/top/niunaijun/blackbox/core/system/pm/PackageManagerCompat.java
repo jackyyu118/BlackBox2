@@ -130,7 +130,16 @@ public class PackageManagerCompat {
                 final ServiceInfo[] res = new ServiceInfo[N];
                 for (int i = 0; i < N; i++) {
                     final BPackage.Service s = p.services.get(i);
-                    res[num++] = generateServiceInfo(s, flags, state, userId);
+                    //res[num++] = generateServiceInfo(s, flags, state, userId);
+                    ServiceInfo serviceInfo = generateServiceInfo(s, flags, state, userId);
+                    if(serviceInfo == null) continue;
+                    if ((flags & PackageManager.GET_META_DATA) != 0) {
+                        if(serviceInfo.metaData != null){
+                            res[num++] = serviceInfo;
+                        }
+                    }else{
+                        res[num++] = serviceInfo;
+                    }
                 }
                 pi.services = ArrayUtils.trimToSize(res, num);
             }

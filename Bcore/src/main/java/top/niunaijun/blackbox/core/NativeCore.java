@@ -52,6 +52,9 @@ public class NativeCore {
         }
     }
 
+    //这个函数有bug，BActivityThread.getCallingBUid();返回的是启动这个app时候的启动者uid
+    //但是getCallingUid是hook处理Binder.getCallingUid()，App里面的Binder不完全是启动者调用且做检查的时候就可能出问题
+    //所以有些需要做特殊处理
     @Keep
     public static int getCallingUid(int origCallingUid) {
         // 系统uid
@@ -63,8 +66,15 @@ public class NativeCore {
 
         if (origCallingUid == BlackBoxCore.getHostUid()) {
 //            Log.d(TAG, "origCallingUid: " + origCallingUid + " => " + BActivityThread.getCallingBUid());
+            //microG
             if(BActivityThread.getAppPackageName().equals("com.google.android.gms")){
                 return Process.ROOT_UID;
+            }
+            //webview WV.qE Process.myUid()函数没有做hook所以只能特殊处理
+            //if (Binder.getCallingUid() == Process.myUid()) {
+            //throw new SecurityException("recordMetrics() may only be called by non-embedded WebView processes");
+            if(BActivityThread.getAppPackageName().equals("com.google.android.webview")){
+                return origCallingUid;
             }
             return BActivityThread.getCallingBUid();
 //            return BActivityThread.getBUid();

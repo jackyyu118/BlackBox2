@@ -9,17 +9,22 @@ import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ServiceInfo;
+import android.util.Log;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import black.android.app.BRActivityThread;
 import black.android.app.BRContextImpl;
+import black.android.app.ContextImpl;
+import black.android.content.pm.BRPackageManager;
 import top.niunaijun.blackbox.BlackBoxCore;
 import top.niunaijun.blackbox.app.BActivityThread;
 import top.niunaijun.blackbox.core.env.AppSystemEnv;
+import top.niunaijun.blackbox.fake.FakeCore;
 import top.niunaijun.blackbox.fake.hook.BinderInvocationStub;
 import top.niunaijun.blackbox.fake.hook.MethodHook;
 import top.niunaijun.blackbox.fake.hook.ProxyMethod;
@@ -56,8 +61,10 @@ public class IPackageManagerProxy extends BinderInvocationStub {
         BRActivityThread.get()._set_sPackageManager(proxyInvocation);
         replaceSystemService("package");
         Object systemContext = BRActivityThread.get(BlackBoxCore.mainThread()).getSystemContext();
+        BRContextImpl.get(systemContext).getPackageManager();
         PackageManager packageManager = BRContextImpl.get(systemContext).mPackageManager();
         if (packageManager != null) {
+            BRPackageManager.get().disableApplicationInfoCache();
             try {
                 Reflector.on("android.app.ApplicationPackageManager")
                         .field("mPM")
@@ -347,7 +354,21 @@ public class IPackageManagerProxy extends BinderInvocationStub {
     public static class getComponentEnabledSetting extends MethodHook {
         @Override
         protected Object hook(Object who, Method method, Object[] args) throws Throwable {
-            return PackageManager.COMPONENT_ENABLED_STATE_DEFAULT;
+            ComponentName componentName = (ComponentName) args[0];
+            String packageName = componentName.getPackageName();
+            ApplicationInfo applicationInfo = BlackBoxCore.getBPackageManager().getApplicationInfo(packageName,0, BActivityThread.getUserId());
+//            if(applicationInfo == null){
+//                throw new IllegalArgumentException();
+//            }else{
+//                return PackageManager.COMPONENT_ENABLED_STATE_DEFAULT;
+//            }
+            if(applicationInfo != null){
+                return PackageManager.COMPONENT_ENABLED_STATE_DEFAULT;
+            }
+            if (AppSystemEnv.isOpenPackage(componentName)) {
+                return method.invoke(who, args);
+            }
+            throw new IllegalArgumentException();
         }
     }
 }

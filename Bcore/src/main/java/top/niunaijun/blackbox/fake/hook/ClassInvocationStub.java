@@ -1,6 +1,7 @@
 package top.niunaijun.blackbox.fake.hook;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -104,6 +105,17 @@ public abstract class ClassInvocationStub implements InvocationHandler, IInjectH
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+//        for debug
+//        if(method.getName().contains("finish")){
+//            Log.d(TAG,"finishAAAAAAAAAAAAAAA:" + method.getName());
+//            Thread currentThread = Thread.currentThread();
+//            StackTraceElement[] stackTraceElements = currentThread.getStackTrace();
+//            for (StackTraceElement element : stackTraceElements) {
+//                // 打印调用栈信息
+//                Log.d(TAG,element.toString());
+//            }
+//        }
+
         MethodHook methodHook = mMethodHookMap.get(method.getName());
         if (methodHook == null || !methodHook.isEnable()) {
             try {

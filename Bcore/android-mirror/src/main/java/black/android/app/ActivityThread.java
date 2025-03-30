@@ -11,6 +11,7 @@ import android.content.pm.ServiceInfo;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.IInterface;
+import android.view.Window;
 
 import java.util.List;
 import java.util.Map;
@@ -201,5 +202,14 @@ public interface ActivityThread {
 
         @BField
         Object packageInfo();
+
+        @BField
+        Window window();
+
+        @BMethod
+        String toString();
+
+        @BField
+        boolean mPreserveWindow();
     }
 }

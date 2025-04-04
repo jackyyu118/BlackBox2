@@ -2,6 +2,7 @@ package top.niunaijun.blackbox.core;
 
 
 import android.os.Process;
+import android.util.Log;
 
 import androidx.annotation.Keep;
 
@@ -74,7 +75,7 @@ public class NativeCore {
             //if (Binder.getCallingUid() == Process.myUid()) {
             //throw new SecurityException("recordMetrics() may only be called by non-embedded WebView processes");
             if(BActivityThread.getAppPackageName().equals("com.google.android.webview")){
-                return origCallingUid;
+                return Process.myUid();
             }
             return BActivityThread.getCallingBUid();
 //            return BActivityThread.getBUid();

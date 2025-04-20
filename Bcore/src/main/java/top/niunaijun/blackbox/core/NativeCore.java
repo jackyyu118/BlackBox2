@@ -69,7 +69,7 @@ public class NativeCore {
 //            Log.d(TAG, "origCallingUid: " + origCallingUid + " => " + BActivityThread.getCallingBUid());
             //microG
             if(BActivityThread.getAppPackageName().equals("com.google.android.gms")){
-                return Process.ROOT_UID;
+                //return Process.ROOT_UID;
             }
             //webview WV.qE Process.myUid()函数没有做hook所以只能特殊处理
             //if (Binder.getCallingUid() == Process.myUid()) {
@@ -78,7 +78,6 @@ public class NativeCore {
                 return Process.myUid();
             }
             return BActivityThread.getCallingBUid();
-//            return BActivityThread.getBUid();
         }
         return origCallingUid;
     }
